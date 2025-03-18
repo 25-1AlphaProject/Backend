@@ -2,6 +2,9 @@ package alpha.chupchup.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "recipe")
@@ -38,4 +41,7 @@ public class Recipe {
 
     @Column(length = 50)
     private String foodType;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 }

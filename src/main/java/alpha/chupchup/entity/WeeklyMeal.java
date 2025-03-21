@@ -6,6 +6,8 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "weekly_meal")
@@ -25,7 +27,10 @@ public class WeeklyMeal {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MealType mealType; // ENUM('아침', '점심', '저녁')
+    private MealType mealType;
+
+    @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MealFeedback> feedbacks = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;

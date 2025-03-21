@@ -5,6 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "recipe")
@@ -41,6 +43,12 @@ public class Recipe {
 
     @Column(length = 50)
     private String foodType;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserRecipeFavorite> favorites = new ArrayList<>();
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WeeklyMeal> weeklyMeals = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;

@@ -2,6 +2,7 @@ package alpha.chupchup.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDateTime;
 
 

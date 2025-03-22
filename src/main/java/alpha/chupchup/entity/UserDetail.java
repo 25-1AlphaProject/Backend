@@ -41,6 +41,11 @@ public class UserDetail {
     @Column(columnDefinition = "JSON", nullable = false)
     private String userDietInfo; // JSON 문자열 저장
 
-    @Column(nullable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

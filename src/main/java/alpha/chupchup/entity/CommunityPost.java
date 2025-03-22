@@ -30,4 +30,17 @@ public class CommunityPost {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
+
+    // Cascade
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<CommunityComment> comments;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<CommunityLike> likes;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<CommunityScrap> scraps;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<CommunityPostTag> postTags;
 }

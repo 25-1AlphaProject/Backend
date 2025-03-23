@@ -29,6 +29,9 @@ public class WeeklyMeal {
     @Column(nullable = false)
     private MealType mealType;
 
+    @Column(nullable = false)
+    private LocalDateTime mealDate;
+
     @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MealFeedback> feedbacks = new ArrayList<>();
 

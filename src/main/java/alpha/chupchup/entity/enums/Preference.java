@@ -1,5 +1,5 @@
 package alpha.chupchup.entity.enums;
 
-public enum FeedbackType {
+public enum Preference {
     LIKE, DISLIKE
 }

@@ -19,7 +19,12 @@ public class WeeklyMeal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "meal_id")
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id", nullable = false)
@@ -32,8 +37,8 @@ public class WeeklyMeal {
     @Column(nullable = false)
     private LocalDateTime mealDate;
 
-    @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MealFeedback> feedbacks = new ArrayList<>();
+    @OneToMany(mappedBy = "weeklyMeal", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RealEat> realEats = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;

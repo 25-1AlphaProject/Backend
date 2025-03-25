@@ -1,6 +1,6 @@
 package alpha.chupchup.entity;
 
-import alpha.chupchup.entity.enums.FeedbackType;
+import alpha.chupchup.entity.enums.Preference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -8,15 +8,16 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "meal_feedback")
+@Table(name = "real_eat")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class MealFeedback {
+public class RealEat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "real_eat_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -24,14 +25,26 @@ public class MealFeedback {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "meal_id", nullable = false)
-    private WeeklyMeal meal;
+    @JoinColumn(name = "meal_id")
+    private WeeklyMeal weeklyMeal;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private FeedbackType feedback;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recipe_id")
+    private Recipe recipe;
+
+    @Column(length = 255)
+    private String mealPhoto;
+
+    private Integer customFoodCalories;
+
+    @Column(length = 255)
+    private String customFoodName;
+
+    private LocalDateTime mealDate;
+
+    @Column(length = 50)
+    private Preference preference;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
 }
-

@@ -1,5 +1,6 @@
 package alpha.chupchup.entity;
 
+import alpha.chupchup.entity.enums.MealType;
 import alpha.chupchup.entity.enums.Preference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,16 +36,24 @@ public class RealEat {
     @Column(length = 255)
     private String mealPhoto;
 
-    private Integer customFoodCalories;
+    private float customFoodCalories;
 
     @Column(length = 255)
     private String customFoodName;
 
     private LocalDateTime mealDate;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MealType mealType;
+
     @Column(length = 50)
     private Preference preference;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    public void setPreference(Preference preference) {
+        this.preference = preference;
+    }
 }

@@ -73,4 +73,11 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
     }
+
+    public void deleteMyAccount() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
+        userRepository.delete(user);
+    }
 }

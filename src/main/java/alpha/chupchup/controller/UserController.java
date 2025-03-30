@@ -49,4 +49,14 @@ public class UserController {
         response.put("data", null);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/info")
+    public ResponseEntity<Map<String, Object>> deleteUserInfo() {
+        userService.deleteMyAccount();
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("message", "회원 탈퇴 완료");
+        response.put("data", null);
+        return ResponseEntity.ok(response);
+    }
 }

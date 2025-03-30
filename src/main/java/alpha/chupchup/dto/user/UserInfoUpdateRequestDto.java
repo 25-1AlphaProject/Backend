@@ -7,5 +7,6 @@ import lombok.Setter;
 @Setter
 public class UserInfoUpdateRequestDto {
     private String nickname;
-    private String profileImageUrl;
+    private String password;
+    private String profile_image_url;
 }

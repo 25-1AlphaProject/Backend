@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 public class RecipeResponseDto {
 
     private String name;
-    private String recipeImage;
     private String recipeText;
     private Float calories;
     private Float carbohydrates;

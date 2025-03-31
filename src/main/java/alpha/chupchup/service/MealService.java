@@ -33,7 +33,6 @@ public class MealService {
                     Recipe recipe = meal.getRecipe();
                     return MealDto.builder()
                             .name(recipe.getName())
-                            .recipeImage(recipe.getRecipeImage())
                             .recipeText(recipe.getRecipeText())
                             .calories(recipe.getCalories())
                             .carbohydrates(recipe.getCarbohydrates())
@@ -69,8 +68,7 @@ public class MealService {
         WeeklyMeal meal = mealRepository.findById(mealId)
                 .orElseThrow(() -> new RuntimeException("해당 식단이 존재하지 않습니다."));
         String recipeText = meal.getRecipe().getRecipeText();
-        String recipeImage = meal.getRecipe().getRecipeImage();
-        return new CookeryResponseDto(recipeText, recipeImage);
+        return new CookeryResponseDto(recipeText);
     }
 
     @Transactional
@@ -85,7 +83,6 @@ public class MealService {
         RealEat realEat = RealEat.builder()
                 .user(user)
                 .recipe(recipe)
-                .mealPhoto(requestDto.getMealPhoto() == null ? recipe.getRecipeImage() : requestDto.getMealPhoto())
                 .mealDate(requestDto.getMealDate())
                 .customFoodCalories(requestDto.getCustomFoodCalories() == 0 ? recipe.getCalories() : requestDto.getCustomFoodCalories())
                 .customFoodName(requestDto.getCustomFoodName() == null ? recipe.getName() : requestDto.getCustomFoodName())

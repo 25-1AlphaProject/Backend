@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class MealDto {
     String name;
-    String recipeImage;
     String recipeText;
     float calories;
     float carbohydrates;

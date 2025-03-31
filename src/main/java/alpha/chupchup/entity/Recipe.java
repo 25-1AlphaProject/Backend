@@ -24,9 +24,6 @@ public class Recipe {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(length = 255)
-    private String recipeImage;
-
     @Column(columnDefinition = "TEXT")
     private String recipeText;
 

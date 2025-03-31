@@ -9,5 +9,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CookeryResponseDto {
     private String recipeText;
-    private String recipeImage;
 }

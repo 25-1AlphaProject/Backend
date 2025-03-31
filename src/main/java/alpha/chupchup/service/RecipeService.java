@@ -10,11 +10,9 @@ import alpha.chupchup.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -63,7 +61,6 @@ public class RecipeService {
                     // Recipe 엔티티에서 필요한 필드를 가져옴
                     return new RecipeResponseDto(
                             fav.getRecipe().getName(),
-                            fav.getRecipe().getRecipeImage(),
                             fav.getRecipe().getRecipeText(),
                             fav.getRecipe().getCalories(),
                             fav.getRecipe().getCarbohydrates(),
@@ -83,7 +80,6 @@ public class RecipeService {
         List<RecipeResponseDto> responseList = recipes.stream()
                 .map(recipe -> new RecipeResponseDto(
                         recipe.getName(),
-                        recipe.getRecipeImage(),
                         recipe.getRecipeText(),
                         recipe.getCalories(),
                         recipe.getCarbohydrates(),

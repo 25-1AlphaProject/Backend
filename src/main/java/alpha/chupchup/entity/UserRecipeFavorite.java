@@ -28,5 +28,12 @@ public class UserRecipeFavorite {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+//    public void setRecipe(Recipe recipe) {
+//        this.recipe = recipe;
+//        if (recipe != null && !recipe.getFavorites().contains(this)) {
+//            recipe.getFavorites().add(this);
+//        }
+//    }
 }
 

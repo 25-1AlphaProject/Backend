@@ -37,9 +37,27 @@ public class WeeklyMeal {
     @Column(nullable = false)
     private LocalDateTime mealDate;
 
+    @Builder.Default
     @OneToMany(mappedBy = "weeklyMeal", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RealEat> realEats = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+//    public void addRealEat(RealEat realEat) {
+//        this.realEats.add(realEat);
+//        realEat.setWeeklyMeal(this);
+//    }
+//
+//    public void removeRealEat(RealEat realEat) {
+//        this.realEats.remove(realEat);
+//        realEat.setWeeklyMeal(null);
+//    }
+//
+//    public void setRecipe(Recipe recipe) {
+//        this.recipe = recipe;
+//        if (recipe != null && !recipe.getWeeklyMeals().contains(this)) {
+//            recipe.getWeeklyMeals().add(this);
+//        }
+//    }
 }

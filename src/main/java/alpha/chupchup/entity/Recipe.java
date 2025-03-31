@@ -24,7 +24,7 @@ public class Recipe {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT")
     private String recipeText;
 
     private Float calories;

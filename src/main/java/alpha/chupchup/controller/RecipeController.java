@@ -84,4 +84,22 @@ public class RecipeController {
                     .body(ResponseDto.error("레시피 검색에 실패했습니다."));
         }
     }
+
+    @GetMapping("/{receipeId}")
+    @Operation(summary = "레시피 조회하기", description = "레시피 아이디를 통해서 레시피를 조회합니다.")
+    public ResponseEntity<ResponseDto<?>> getRecipeByRecipeId(
+            @Parameter(
+                    description = "레시피 아이디",
+                    required = true
+            )
+            @PathVariable Long recipeId
+    ) {
+        try {
+            RecipeResponseDto recipe = recipeService.getRecipeByRecipeId(recipeId);
+            return ResponseEntity.ok(ResponseDto.success(recipe));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseDto.error("레시피 조회에 실패했습니다."));
+        }
+    }
 }

@@ -77,7 +77,7 @@ public class RecipeService {
 
     public List<RecipeResponseDto> searchRecipe(String keyword) {
         List<Recipe> recipes = recipeRepository.searchRecipes(keyword);
-        List<RecipeResponseDto> responseList = recipes.stream()
+        return recipes.stream()
                 .map(recipe -> new RecipeResponseDto(
                         recipe.getName(),
                         recipe.getRecipeText(),
@@ -91,6 +91,23 @@ public class RecipeService {
                         recipe.getFoodType()
                 ))
                 .toList();
-        return responseList;
+    }
+
+    public RecipeResponseDto getRecipeByRecipeId(Long recipeId) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new RuntimeException("해당 레시피를 찾을 수 없습니다."));
+
+        return new RecipeResponseDto(
+                recipe.getName(),
+                recipe.getRecipeText(),
+                recipe.getCalories(),
+                recipe.getCarbohydrates(),
+                recipe.getProtein(),
+                recipe.getFat(),
+                recipe.getSodium(),
+                recipe.getFoodImage(),
+                recipe.getIngredient(),
+                recipe.getFoodType()
+        );
     }
 }

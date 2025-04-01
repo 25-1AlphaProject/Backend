@@ -2,6 +2,9 @@ package alpha.chupchup.controller;
 
 import alpha.chupchup.dto.*;
 import alpha.chupchup.service.MealService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,12 +15,21 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/meal")
+@Tag(name = "Meal-Controller", description = "Meal-관련-API")
 public class MealController {
 
     private final MealService mealService;
 
-    @GetMapping("/api/meal/{date}")
-    public ResponseEntity<ResponseDto<?>> getMealsByDate(@PathVariable("date") LocalDateTime dateTime) {
+    @GetMapping("/{date}")
+    @Operation(summary = "해당 날짜 식단 조회", description = "해당 날짜의 식단을 조회합니다.")
+    public ResponseEntity<ResponseDto<?>> getMealsByDate(
+            @Parameter(
+                    description = "조회할 날짜",
+                    required = true
+            )
+            @PathVariable("date") LocalDateTime dateTime
+    ) {
         try {
             List<MealDto> meals = mealService.getOneDayMealByDate(dateTime);
             return ResponseEntity.ok(ResponseDto.success(meals));
@@ -28,30 +40,45 @@ public class MealController {
         }
     }
 
-    @PostMapping("/api/meal/feedback")
-    public ResponseEntity<ResponseDto<String>> registerFeedback(@RequestBody PreferenceRequestDto requestDto) {
+    @PostMapping("/preference")
+    @Operation(summary = "선호도 등록하기", description = "식단에 선호도를 등록합니다.")
+    public ResponseEntity<ResponseDto<String>> registerPreference(@RequestBody PreferenceRequestDto requestDto) {
         try {
             mealService.registerPreference(requestDto);
-            return ResponseEntity.ok(ResponseDto.success("피드백이 정상적으로 등록되었습니다."));
+            return ResponseEntity.ok(ResponseDto.success("선호도가 정상적으로 등록되었습니다."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ResponseDto.error("피드백 등록에 실패했습니다."));
+                    .body(ResponseDto.error("선호도 등록에 실패했습니다."));
         }
     }
 
-    @DeleteMapping("/api/meal/feedback/{mealId}")
-    public ResponseEntity<ResponseDto<String>> deleteFeedback(@PathVariable Long realEatId) {
+    @DeleteMapping("/preference/{mealId}")
+    @Operation(summary = "선호도 삭제하기", description = "식단에 선호도를 제거합니다.")
+    public ResponseEntity<ResponseDto<String>> deletePreference(
+            @Parameter(
+                    description = "삭제할 실제 식단 아이디",
+                    required = true
+            )
+            @PathVariable Long realEatId
+    ) {
         try {
             mealService.deletePreference(realEatId);
-            return ResponseEntity.ok(ResponseDto.success("피드백이 정상적으로 삭제되었습니다."));
+            return ResponseEntity.ok(ResponseDto.success("선호도가 정상적으로 삭제되었습니다."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ResponseDto.error("피드백 삭제에 실패했습니다."));
+                    .body(ResponseDto.error("선호도 제거에 실패했습니다."));
         }
     }
 
-    @GetMapping("/api/meal/cookery")
-    public ResponseEntity<ResponseDto<?>> getCookery(@PathVariable Long mealId) {
+    @GetMapping("/cookery/{mealId}")
+    @Operation(summary = "조리법 조회하기", description = "조리법을 조회합니다.")
+    public ResponseEntity<ResponseDto<?>> getCookery(
+            @Parameter(
+                    description = "조리법을 조회할 식단 아이디",
+                    required = true
+            )
+            @PathVariable Long mealId
+    ) {
         try {
             CookeryResponseDto cookeryResponseDto = mealService.getCookery(mealId);
             return ResponseEntity.ok(ResponseDto.success(cookeryResponseDto));
@@ -61,7 +88,8 @@ public class MealController {
         }
     }
 
-    @PostMapping("/api/meal/real-eat")
+    @PostMapping("/real-eat")
+    @Operation(summary = "실제 먹은 식단 추가하기", description = "실제로 먹은 식단을 추가합니다.")
     public ResponseEntity<ResponseDto<String>> postRealEat(@RequestBody RealEatPostRequestDto requestDto) {
         try {
             mealService.postRealEat(requestDto);

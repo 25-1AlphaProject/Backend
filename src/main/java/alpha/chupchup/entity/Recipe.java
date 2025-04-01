@@ -24,10 +24,7 @@ public class Recipe {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(length = 255)
-    private String recipeImage;
-
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT")
     private String recipeText;
 
     private Float calories;
@@ -45,12 +42,34 @@ public class Recipe {
     @Column(length = 50)
     private String foodType;
 
+    @Builder.Default
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserRecipeFavorite> favorites = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WeeklyMeal> weeklyMeals = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+//    public void addWeeklyMeal(WeeklyMeal weeklyMeal) {
+//        this.weeklyMeals.add(weeklyMeal);
+//        weeklyMeal.setRecipe(this);
+//    }
+//
+//    public void removeWeeklyMeal(WeeklyMeal weeklyMeal) {
+//        this.weeklyMeals.remove(weeklyMeal);
+//        weeklyMeal.setRecipe(null);
+//    }
+//
+//    public void addFavorite(UserRecipeFavorite favorite) {
+//        this.favorites.add(favorite);
+//        favorite.setRecipe(this);
+//    }
+//
+//    public void removeFavorite(UserRecipeFavorite favorite) {
+//        this.favorites.remove(favorite);
+//        favorite.setRecipe(null);
+//    }
 }

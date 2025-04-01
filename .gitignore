@@ -8,3 +8,5 @@
 .idea/
 .idea/*
 .idea/*/
+
+src/main/resources/application.yaml

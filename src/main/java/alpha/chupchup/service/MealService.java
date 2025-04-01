@@ -90,4 +90,12 @@ public class MealService {
 
         realEatRepository.save(realEat);
     }
+
+    @Transactional
+    public void deleteRealEatByRealEatId(Long realEatId) {
+        if (!realEatRepository.existsById(realEatId)) {
+            throw new RuntimeException("해당 실제 먹은 식단을 찾을 수 없습니다.");
+        }
+        realEatRepository.deleteById(realEatId);
+    }
 }

@@ -99,4 +99,22 @@ public class MealController {
                     .body(ResponseDto.error("식단 등록에 실패했습니다."));
         }
     }
+
+    @DeleteMapping("/{realEatId}")
+    @Operation(summary = "실제 먹은 식단 제거하기", description = "실제로 먹은 식단을 제거합니다.")
+    public ResponseEntity<ResponseDto<String>> deleteRealEat(
+            @Parameter(
+                    description = "삭제할 실제 식단 아이디",
+                    required = true
+            )
+            @PathVariable Long realEatId
+    ) {
+        try {
+            mealService.deleteRealEatByRealEatId(realEatId);
+            return ResponseEntity.ok(ResponseDto.success("식단이 정상적으로 삭제되었습니다."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseDto.error("식단 삭제에 실패했습니다."));
+        }
+    }
 }

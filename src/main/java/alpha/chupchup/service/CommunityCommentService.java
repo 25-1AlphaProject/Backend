@@ -1,0 +1,40 @@
+package alpha.chupchup.service;
+
+import alpha.chupchup.dto.community.CommentCreateRequestDto;
+import alpha.chupchup.entity.*;
+import alpha.chupchup.repository.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class CommunityCommentService {
+
+    private final CommunityPostRepository postRepository;
+    private final CommunityCommentRepository commentRepository;
+    private final UserRepository userRepository;
+
+    // (대)댓글 작성
+    public void createComment(Long postId, CommentCreateRequestDto dto) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
+
+        CommunityPost post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+
+        CommunityComment comment = new CommunityComment();
+        comment.setUser(user);
+        comment.setPost(post);
+        comment.setContent(dto.getContent());
+
+        if (dto.getParentCommentId() != null) {
+            CommunityComment parent = commentRepository.findById(dto.getParentCommentId())
+                    .orElseThrow(() -> new IllegalArgumentException("부모 댓글이 존재하지 않습니다."));
+            comment.setParentComment(parent);
+        }
+
+        commentRepository.save(comment);
+    }
+}

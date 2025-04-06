@@ -3,6 +3,7 @@ package alpha.chupchup.service;
 import alpha.chupchup.dto.community.AuthorInfoDto;
 import alpha.chupchup.dto.community.CommentCreateRequestDto;
 import alpha.chupchup.dto.community.CommentResponseDto;
+import alpha.chupchup.dto.community.CommentUpdateRequestDto;
 import alpha.chupchup.entity.*;
 import alpha.chupchup.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -59,6 +60,30 @@ public class CommunityCommentService {
                         )
                 )
         ).toList();
+    }
+    // (대)댓글 수정
+    public void updateComment(Long commentId, CommentUpdateRequestDto dto) {
+        CommunityComment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!comment.getUser().getUsername().equals(username)) {
+            throw new SecurityException("수정 권한이 없습니다.");
+        }
+
+        comment.setContent(dto.getContent());
+    }
+    // (대)댓글 삭제
+    public void deleteComment(Long commentId) {
+        CommunityComment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!comment.getUser().getUsername().equals(username)) {
+            throw new SecurityException("삭제 권한이 없습니다.");
+        }
+
+        commentRepository.delete(comment);
     }
 
 }

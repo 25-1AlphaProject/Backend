@@ -70,4 +70,31 @@ public class CommunityPostService {
         );
     }
 
+    // 게시글 수정
+    public void updatePost(Long postId, PostUpdateRequestDto dto) {
+        CommunityPost post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!post.getUser().getUsername().equals(username)) {
+            throw new SecurityException("수정 권한이 없습니다.");
+        }
+
+        post.setTitle(dto.getTitle());
+        post.setContent(dto.getContent());
+    }
+
+    // 게시글 삭제
+    public void deletePost(Long postId) {
+        CommunityPost post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!post.getUser().getUsername().equals(username)) {
+            throw new SecurityException("삭제 권한이 없습니다.");
+        }
+
+        postRepository.delete(post);
+    }
+
 }

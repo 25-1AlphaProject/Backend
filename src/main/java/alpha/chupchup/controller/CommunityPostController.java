@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/community/posts")
 @RequiredArgsConstructor
@@ -19,12 +22,34 @@ public class CommunityPostController {
         PostCreateResponseDto response = postService.createPost(dto);
         return ResponseEntity.ok(response);
     }
-
     // 게시글 조회
     @GetMapping("/{postId}")
     public ResponseEntity<PostDetailResponseDto> getPostDetail(@PathVariable Long postId) {
         PostDetailResponseDto response = postService.getPostDetail(postId);
         return ResponseEntity.ok(response);
     }
+    // 게시글 수정
+    @PutMapping("/{postId}")
+    public ResponseEntity<Map<String, Object>> updatePost(
+            @PathVariable Long postId,
+            @RequestBody PostUpdateRequestDto dto) {
+        postService.updatePost(postId, dto);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("message", "게시글 수정 완료");
+        return ResponseEntity.ok(response);
+    }
+    // 게시글 삭제
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Map<String, Object>> deletePost(@PathVariable Long postId) {
+        postService.deletePost(postId);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("message", "게시글 삭제 완료");
+        return ResponseEntity.ok(response);
+    }
+
 
 }

@@ -8,8 +8,15 @@ import alpha.chupchup.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
 
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -96,5 +103,36 @@ public class CommunityPostService {
 
         postRepository.delete(post);
     }
+
+    // 게시글 목록 조회 페이징
+    public Map<String, Object> getPostList(String sort, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, getSortBy(sort));
+        Page<CommunityPost> postPage = postRepository.findAll(pageable);
+
+        List<Map<String, Object>> postList = postPage.stream().map(post -> {
+            Map<String, Object> p = new HashMap<>();
+            p.put("postId", post.getId());
+            p.put("title", post.getTitle());
+            p.put("likeCount", post.getLikes().size());
+            p.put("scrapCount", post.getScraps().size());
+            p.put("createdAt", post.getCreatedAt());
+            return p;
+        }).toList();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("posts", postList);
+        result.put("currentPage", postPage.getNumber() + 1);
+        result.put("totalPages", postPage.getTotalPages());
+
+        return result;
+    }
+
+    private Sort getSortBy(String sort) {
+        return switch (sort) {
+            case "popular" -> Sort.by(Sort.Order.desc("likes"));  // likeCount를 기준으로 정렬
+            default -> Sort.by(Sort.Order.desc("createdAt"));
+        };
+    }
+
 
 }

@@ -50,6 +50,17 @@ public class CommunityPostController {
         response.put("message", "게시글 삭제 완료");
         return ResponseEntity.ok(response);
     }
+    // 게시글 목록 조회 페이징
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> getPostList(
+            @RequestParam(defaultValue = "recent") String sort,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Map<String, Object> response = postService.getPostList(sort, page, size);
+        return ResponseEntity.ok(response);
+    }
+
 
 
 }

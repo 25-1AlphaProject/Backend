@@ -1,11 +1,15 @@
 package alpha.chupchup.service;
 
+import alpha.chupchup.dto.community.AuthorInfoDto;
 import alpha.chupchup.dto.community.CommentCreateRequestDto;
+import alpha.chupchup.dto.community.CommentResponseDto;
 import alpha.chupchup.entity.*;
 import alpha.chupchup.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,4 +41,24 @@ public class CommunityCommentService {
 
         commentRepository.save(comment);
     }
+
+    // (대)댓글 조회
+    public List<CommentResponseDto> getCommentsByPost(Long postId) {
+        List<CommunityComment> commentList = commentRepository.findAllByPostId(postId);
+
+        return commentList.stream().map(c ->
+                new CommentResponseDto(
+                        c.getId(),
+                        c.getContent(),
+                        c.getParentComment() != null ? c.getParentComment().getId() : null,
+                        c.getCreatedAt(),
+                        new AuthorInfoDto(
+                                c.getUser().getId(),
+                                c.getUser().getNickname(),
+                                c.getUser().getProfileImageUrl()
+                        )
+                )
+        ).toList();
+    }
+
 }

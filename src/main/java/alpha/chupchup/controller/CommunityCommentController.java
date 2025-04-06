@@ -1,6 +1,7 @@
 package alpha.chupchup.controller;
 
 import alpha.chupchup.dto.community.CommentCreateRequestDto;
+import alpha.chupchup.dto.community.CommentResponseDto;
 import alpha.chupchup.service.CommunityCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/community/posts/{postId}/comments")
@@ -30,4 +32,11 @@ public class CommunityCommentController {
 
         return ResponseEntity.ok(response);
     }
+    // (대)댓글 조회
+    @GetMapping
+    public ResponseEntity<List<CommentResponseDto>> getComments(@PathVariable Long postId) {
+        List<CommentResponseDto> response = commentService.getCommentsByPost(postId);
+        return ResponseEntity.ok(response);
+    }
+
 }

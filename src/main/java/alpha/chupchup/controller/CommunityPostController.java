@@ -13,9 +13,18 @@ public class CommunityPostController {
 
     private final CommunityPostService postService;
 
+    // 게시글 작성
     @PostMapping
     public ResponseEntity<PostCreateResponseDto> createPost(@RequestBody PostCreateRequestDto dto) {
         PostCreateResponseDto response = postService.createPost(dto);
         return ResponseEntity.ok(response);
     }
+
+    // 게시글 조회
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostDetailResponseDto> getPostDetail(@PathVariable Long postId) {
+        PostDetailResponseDto response = postService.getPostDetail(postId);
+        return ResponseEntity.ok(response);
+    }
+
 }

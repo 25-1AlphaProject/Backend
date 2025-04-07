@@ -130,4 +130,21 @@ public class MealController {
                     .body(ResponseDto.error("식단 생성에 실패했습니다."));
         }
     }
+
+    @GetMapping("/ingredient-links/{recipeId}")
+    @Operation(summary = "재료 링크 조회하기", description = "레시피에 해당되는 재료들의 링크를 조회합니다.")
+    public ResponseEntity<ResponseDto<?>> getIngredientLinks(
+            @Parameter(
+                    description = "조회할 레시피 아이디",
+                    required = true
+            )
+            @PathVariable Long recipeId
+    ) {
+        try {
+            return ResponseEntity.ok(ResponseDto.success(mealService.generateWeeklyMeal(recipeId)));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseDto.error("재료 조회에 실패했습니다."));
+        }
+    }
 }

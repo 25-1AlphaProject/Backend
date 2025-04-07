@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -130,6 +131,18 @@ public class MealService {
                     .toList();
         } else {
             throw new RuntimeException("FastAPI 식단 생성 실패");
+        }
+    }
+
+    public List<IngredientLinksResponseDto> getIngredientLinks(Long recipeId) {
+        String requestUrl = fastApiUrl + "/ingredient-links?recipeId=" + recipeId;
+        ResponseEntity<IngredientLinksResponseDto[]> responseEntity =
+                restTemplate.getForEntity(requestUrl, IngredientLinksResponseDto[].class);
+
+        if(responseEntity.getStatusCode() == HttpStatus.OK && responseEntity.getBody() != null) {
+            return Arrays.asList(responseEntity.getBody());
+        } else {
+            throw new RuntimeException("재료 링크 조회에 실패했습니다.");
         }
     }
 }

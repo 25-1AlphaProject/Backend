@@ -29,10 +29,12 @@ public class MealController {
                     description = "조회할 날짜",
                     required = true
             )
-            @PathVariable("date") LocalDateTime dateTime
+            @PathVariable("date") LocalDateTime dateTime,
+            HttpServletRequest servletRequest
     ) {
         try {
-            List<MealDto> meals = mealService.getOneDayMealByDate(dateTime);
+            Long userId = 0L;
+            List<MealDto> meals = mealService.getOneDayMealByDate(userId, dateTime);
             return ResponseEntity.ok(ResponseDto.success(meals));
         } catch (Exception e) {
             return ResponseEntity
@@ -43,9 +45,13 @@ public class MealController {
 
     @PostMapping("/preference")
     @Operation(summary = "선호도 등록하기", description = "식단에 선호도를 등록합니다.")
-    public ResponseEntity<ResponseDto<String>> registerPreference(@RequestBody PreferenceRequestDto requestDto) {
+    public ResponseEntity<ResponseDto<String>> registerPreference(
+            @RequestBody PreferenceRequestDto requestDto,
+            HttpServletRequest servletRequest
+    ) {
         try {
-            mealService.registerPreference(requestDto);
+            Long userId = 0L;
+            mealService.registerPreference(requestDto, userId);
             return ResponseEntity.ok(ResponseDto.success("선호도가 정상적으로 등록되었습니다."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -60,10 +66,12 @@ public class MealController {
                     description = "삭제할 실제 식단 아이디",
                     required = true
             )
-            @PathVariable("mealId") Long realEatId
+            @PathVariable("mealId") Long realEatId,
+            HttpServletRequest servletRequest
     ) {
         try {
-            mealService.deletePreference(realEatId);
+            Long userId = 0L;
+            mealService.deletePreference(userId, realEatId);
             return ResponseEntity.ok(ResponseDto.success("선호도가 정상적으로 삭제되었습니다."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -108,10 +116,12 @@ public class MealController {
                     description = "삭제할 실제 식단 아이디",
                     required = true
             )
-            @PathVariable Long realEatId
+            @PathVariable Long realEatId,
+            HttpServletRequest servletRequest
     ) {
         try {
-            mealService.deleteRealEatByRealEatId(realEatId);
+            Long userId = 0L;
+            mealService.deleteRealEatByRealEatId(userId, realEatId);
             return ResponseEntity.ok(ResponseDto.success("식단이 정상적으로 삭제되었습니다."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -141,10 +151,10 @@ public class MealController {
             @PathVariable Long recipeId
     ) {
         try {
-            return ResponseEntity.ok(ResponseDto.success(mealService.generateWeeklyMeal(recipeId)));
+            return ResponseEntity.ok(ResponseDto.success(mealService.getIngredientLinks(recipeId)));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ResponseDto.error("재료 조회에 실패했습니다."));
+                    .body(ResponseDto.error("재료 링크 조회에 실패했습니다."));
         }
     }
 }

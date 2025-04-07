@@ -30,10 +30,12 @@ public class RecipeController {
                     description = "레시피 아이디",
                     required = true
             )
-            @PathVariable Long recipeId
+            @PathVariable Long recipeId,
+            HttpServletRequest servletRequest
     ) {
         try {
-            recipeService.postRecipeFavorite(recipeId);
+            Long userId = 0L;
+            recipeService.postRecipeFavorite(userId, recipeId);
             return ResponseEntity.ok(ResponseDto.success("좋아요 추가에 성공했습니다."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -48,10 +50,12 @@ public class RecipeController {
                     description = "레시피 아이디",
                     required = true
             )
-            @PathVariable Long recipeId
+            @PathVariable Long recipeId,
+            HttpServletRequest servletRequest
     ) {
         try {
-            recipeService.deleteRecipeFavorite(recipeId);
+            Long userId = 0L;
+            recipeService.deleteRecipeFavorite(userId, recipeId);
             return ResponseEntity.ok(ResponseDto.success("좋아요 삭제에 성공습니다."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -85,7 +89,7 @@ public class RecipeController {
         }
     }
 
-    @GetMapping("/{receipeId}")
+    @GetMapping("/{recipeId}")
     @Operation(summary = "레시피 조회하기", description = "레시피 아이디를 통해서 레시피를 조회합니다.")
     public ResponseEntity<ResponseDto<?>> getRecipeByRecipeId(
             @Parameter(

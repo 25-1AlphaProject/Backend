@@ -29,8 +29,8 @@ public class MealService {
     private final RestTemplate restTemplate;
     private final String fastApiUrl;
 
-    public List<MealDto> getOneDayMealByDate(LocalDateTime dateTime) {
-        List<RealEat> realEatList = realEatRepository.findAllByMealDateOrderByIdAsc(dateTime);
+    public List<MealDto> getOneDayMealByDate(Long userId, LocalDateTime localDateTime) {
+        List<RealEat> realEatList = realEatRepository.findAllByUserIdAndMealDateOrderByIdAsc(userId, localDateTime);
         return realEatList.stream()
                 .map(meal -> {
                     Recipe recipe = meal.getRecipe();
@@ -53,15 +53,15 @@ public class MealService {
     }
 
     @Transactional
-    public void registerPreference(PreferenceRequestDto requestDto) {
-        RealEat realEat = realEatRepository.findById(requestDto.getRealEatId())
+    public void registerPreference(PreferenceRequestDto requestDto, Long userId) {
+        RealEat realEat = realEatRepository.findByIdAndUserId(requestDto.getRealEatId(), userId)
                 .orElseThrow(() -> new RuntimeException("해당 RealEat 기록이 존재하지 않습니다."));
         realEat.setPreference(requestDto.getPreference());
     }
 
     @Transactional
-    public void deletePreference(Long realEatId) {
-        RealEat realEat = realEatRepository.findById(realEatId)
+    public void deletePreference(Long userId, Long realEatId) {
+        RealEat realEat = realEatRepository.findByIdAndUserId(realEatId, userId)
                 .orElseThrow(() -> new RuntimeException("해당 RealEat 기록이 존재하지 않습니다."));
         realEat.setPreference(null);
     }
@@ -94,11 +94,15 @@ public class MealService {
     }
 
     @Transactional
-    public void deleteRealEatByRealEatId(Long realEatId) {
-        if (!realEatRepository.existsById(realEatId)) {
-            throw new RuntimeException("해당 실제 먹은 식단을 찾을 수 없습니다.");
+    public void deleteRealEatByRealEatId(Long userId, Long realEatId) {
+        RealEat realEat = realEatRepository.findById(realEatId)
+                .orElseThrow(() -> new RuntimeException("해당 실제 먹은 식단을 찾을 수 없습니다."));
+
+        if (realEat.getUser().getId().equals(userId)) {
+            realEatRepository.delete(realEat);
+        } else {
+            throw new RuntimeException("해당 유저의 식단이 아닌 것을 삭제하려고 합니다.");
         }
-        realEatRepository.deleteById(realEatId);
     }
 
     public List<MealDto> generateWeeklyMeal(Long userId) {
@@ -139,7 +143,7 @@ public class MealService {
         ResponseEntity<IngredientLinksResponseDto[]> responseEntity =
                 restTemplate.getForEntity(requestUrl, IngredientLinksResponseDto[].class);
 
-        if(responseEntity.getStatusCode() == HttpStatus.OK && responseEntity.getBody() != null) {
+        if(responseEntity.getStatusCode() == HttpStatus.OK) {
             return Arrays.asList(responseEntity.getBody());
         } else {
             throw new RuntimeException("재료 링크 조회에 실패했습니다.");

@@ -15,11 +15,11 @@ import java.time.LocalDateTime;
 public class MealDto {
     String name;
     String recipeText;
-    float calories;
-    float carbohydrates;
-    float protein;
-    float fat;
-    float sodium;
+    Float calories;
+    Float carbohydrates;
+    Float protein;
+    Float fat;
+    Float sodium;
     String foodImage;
     String ingredient;
     String foodType;

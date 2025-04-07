@@ -7,5 +7,5 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface MealRepository extends JpaRepository<WeeklyMeal, Long> {
-    List<WeeklyMeal> findAllByMealDateOrderByIdAsc(LocalDateTime dateTime);
+    List<WeeklyMeal> findByUserIdAndCreatedAtBetween(Long userId, LocalDateTime startDay, LocalDateTime startDayTomorrow);
 }

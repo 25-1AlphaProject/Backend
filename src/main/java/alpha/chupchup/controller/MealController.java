@@ -5,6 +5,7 @@ import alpha.chupchup.service.MealService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +60,7 @@ public class MealController {
                     description = "삭제할 실제 식단 아이디",
                     required = true
             )
-            @PathVariable Long realEatId
+            @PathVariable("mealId") Long realEatId
     ) {
         try {
             mealService.deletePreference(realEatId);
@@ -115,6 +116,18 @@ public class MealController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ResponseDto.error("식단 삭제에 실패했습니다."));
+        }
+    }
+
+    @GetMapping("/weekly")
+    @Operation(summary = "일주일 식단 생성하기", description = "일주일 식단을 생성합니다.")
+    public ResponseEntity<ResponseDto<?>> generateWeeklyMeal(HttpServletRequest servletRequest) {
+        try {
+            Long userId = 0L;
+            return ResponseEntity.ok(ResponseDto.success(mealService.generateWeeklyMeal(userId)));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseDto.error("식단 생성에 실패했습니다."));
         }
     }
 }

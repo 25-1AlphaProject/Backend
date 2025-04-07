@@ -1,21 +1,21 @@
 package alpha.chupchup.service;
 
-import alpha.chupchup.dto.CookeryResponseDto;
-import alpha.chupchup.dto.MealDto;
-import alpha.chupchup.dto.PreferenceRequestDto;
-import alpha.chupchup.dto.RealEatPostRequestDto;
+import alpha.chupchup.dto.*;
 import alpha.chupchup.entity.RealEat;
 import alpha.chupchup.entity.Recipe;
 import alpha.chupchup.entity.User;
 import alpha.chupchup.entity.WeeklyMeal;
 import alpha.chupchup.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,6 +25,8 @@ public class MealService {
     private final RealEatRepository realEatRepository;
     private final UserRepository userRepository;
     private final RecipeRepository recipeRepository;
+    private final RestTemplate restTemplate;
+    private final String fastApiUrl;
 
     public List<MealDto> getOneDayMealByDate(LocalDateTime dateTime) {
         List<RealEat> realEatList = realEatRepository.findAllByMealDateOrderByIdAsc(dateTime);
@@ -46,8 +48,7 @@ public class MealService {
                             .dateTime(meal.getCreatedAt())
                             .build();
                 })
-                .collect(Collectors.toList());
-
+                .toList();
     }
 
     @Transactional
@@ -97,5 +98,38 @@ public class MealService {
             throw new RuntimeException("해당 실제 먹은 식단을 찾을 수 없습니다.");
         }
         realEatRepository.deleteById(realEatId);
+    }
+
+    public List<MealDto> generateWeeklyMeal(Long userId) {
+        String requestUrl = fastApiUrl + "?userId=" + userId;
+        ResponseEntity<FastApiResponseDto> response = restTemplate.postForEntity(requestUrl, null, FastApiResponseDto.class);
+
+        if (response.getStatusCode() == HttpStatus.OK && response.getBody().isSuccess()) {
+            LocalDateTime startDay = LocalDate.now().atStartOfDay();
+            LocalDateTime startDayTomorrow = LocalDate.now().plusDays(1).atStartOfDay();
+            List<WeeklyMeal> weeklyMeals = mealRepository.findByUserIdAndCreatedAtBetween(userId, startDay, startDayTomorrow);
+
+            return weeklyMeals.stream()
+                    .map(meal -> {
+                        Recipe recipe = meal.getRecipe();
+                        return MealDto.builder()
+                                .name(recipe.getName())
+                                .recipeText(recipe.getRecipeText())
+                                .calories(recipe.getCalories())
+                                .carbohydrates(recipe.getCarbohydrates())
+                                .protein(recipe.getProtein())
+                                .fat(recipe.getFat())
+                                .sodium(recipe.getSodium())
+                                .foodImage(recipe.getFoodImage())
+                                .ingredient(recipe.getIngredient())
+                                .foodType(recipe.getFoodType())
+                                .mealType(meal.getMealType())
+                                .dateTime(meal.getCreatedAt())
+                                .build();
+                    })
+                    .toList();
+        } else {
+            throw new RuntimeException("FastAPI 식단 생성 실패");
+        }
     }
 }

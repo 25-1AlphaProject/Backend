@@ -36,7 +36,7 @@ public class RealEat {
     @Column(length = 255)
     private String mealPhoto;
 
-    private float customFoodCalories;
+    private Float customFoodCalories;
 
     @Column(length = 255)
     private String customFoodName;

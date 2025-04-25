@@ -5,8 +5,12 @@ import alpha.chupchup.entity.RealEat;
 import alpha.chupchup.entity.Recipe;
 import alpha.chupchup.entity.User;
 import alpha.chupchup.entity.WeeklyMeal;
-import alpha.chupchup.repository.*;
+import alpha.chupchup.repository.MealRepository;
+import alpha.chupchup.repository.RealEatRepository;
+import alpha.chupchup.repository.RecipeRepository;
+import alpha.chupchup.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,8 +30,8 @@ public class MealService {
     private final RealEatRepository realEatRepository;
     private final UserRepository userRepository;
     private final RecipeRepository recipeRepository;
-    private final RestTemplate restTemplate;
-    private final String fastApiUrl;
+    private RestTemplate restTemplate;
+    private String fastApiUrl;
 
     public List<MealDto> getOneDayMealByDate(Long userId, LocalDateTime localDateTime) {
         List<RealEat> realEatList = realEatRepository.findAllByUserIdAndMealDateOrderByIdAsc(userId, localDateTime);
@@ -140,13 +144,28 @@ public class MealService {
 
     public List<IngredientLinksResponseDto> getIngredientLinks(Long recipeId) {
         String requestUrl = fastApiUrl + "/ingredient-links?recipeId=" + recipeId;
-        ResponseEntity<IngredientLinksResponseDto[]> responseEntity =
-                restTemplate.getForEntity(requestUrl, IngredientLinksResponseDto[].class);
 
-        if(responseEntity.getStatusCode() == HttpStatus.OK) {
+        HttpEntity<IngredientLinksRequestDto> body = new HttpEntity<>(getIngredientLinksRequest(recipeId));
+
+        ResponseEntity<IngredientLinksResponseDto[]> responseEntity =
+                restTemplate.postForEntity(requestUrl, body, IngredientLinksResponseDto[].class);
+
+        if(responseEntity.getStatusCode() == HttpStatus.OK && responseEntity.getBody() != null) {
             return Arrays.asList(responseEntity.getBody());
         } else {
             throw new RuntimeException("재료 링크 조회에 실패했습니다.");
         }
+    }
+
+    public IngredientLinksRequestDto getIngredientLinksRequest(Long recipeId) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new RuntimeException("레시피를 찾을 수 없습니다."));
+
+        List<String> ingredients = Arrays.stream(recipe.getIngredient().split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
+
+        return new IngredientLinksRequestDto(ingredients);
     }
 }

@@ -10,6 +10,7 @@ import alpha.chupchup.repository.RealEatRepository;
 import alpha.chupchup.repository.RecipeRepository;
 import alpha.chupchup.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,8 @@ public class MealService {
     private final RealEatRepository realEatRepository;
     private final UserRepository userRepository;
     private final RecipeRepository recipeRepository;
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
+    @Value("{fast-api.url}")
     private String fastApiUrl;
 
     public List<MealDto> getOneDayMealByDate(Long userId, LocalDateTime localDateTime) {

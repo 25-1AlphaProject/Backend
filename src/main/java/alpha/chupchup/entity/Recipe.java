@@ -52,24 +52,4 @@ public class Recipe {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
-
-//    public void addWeeklyMeal(WeeklyMeal weeklyMeal) {
-//        this.weeklyMeals.add(weeklyMeal);
-//        weeklyMeal.setRecipe(this);
-//    }
-//
-//    public void removeWeeklyMeal(WeeklyMeal weeklyMeal) {
-//        this.weeklyMeals.remove(weeklyMeal);
-//        weeklyMeal.setRecipe(null);
-//    }
-//
-//    public void addFavorite(UserRecipeFavorite favorite) {
-//        this.favorites.add(favorite);
-//        favorite.setRecipe(this);
-//    }
-//
-//    public void removeFavorite(UserRecipeFavorite favorite) {
-//        this.favorites.remove(favorite);
-//        favorite.setRecipe(null);
-//    }
 }

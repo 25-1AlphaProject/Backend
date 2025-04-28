@@ -56,11 +56,4 @@ public class RealEat {
     public void setPreference(Preference preference) {
         this.preference = preference;
     }
-
-//    public void setWeeklyMeal(WeeklyMeal weeklyMeal) {
-//        this.weeklyMeal = weeklyMeal;
-//        if (weeklyMeal != null && !weeklyMeal.getRealEats().contains(this)) {
-//            weeklyMeal.getRealEats().add(this);
-//        }
-//    }
 }

@@ -13,7 +13,7 @@ out/
 *.iws
 
 # 설정 파일 (로컬 환경/보안)
-application.properties
+src/main/resources/application.properties
 
 # 로그 파일
 *.log

@@ -25,10 +25,10 @@ public class UserDetail {
     @Column(nullable = false)
     private int age;
 
-    @Column(nullable = false, precision = 5, scale = 2)
+    @Column(nullable = false)
     private double height;
 
-    @Column(nullable = false, precision = 5, scale = 2)
+    @Column(nullable = false)
     private double weight;
 
     @Enumerated(EnumType.STRING)

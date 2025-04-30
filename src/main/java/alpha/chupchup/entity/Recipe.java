@@ -18,15 +18,13 @@ public class Recipe {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "recipe_id")
     private Long id;
 
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(length = 255)
-    private String recipeImage;
-
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT")
     private String recipeText;
 
     private Float calories;
@@ -44,9 +42,11 @@ public class Recipe {
     @Column(length = 50)
     private String foodType;
 
+    @Builder.Default
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserRecipeFavorite> favorites = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WeeklyMeal> weeklyMeals = new ArrayList<>();
 

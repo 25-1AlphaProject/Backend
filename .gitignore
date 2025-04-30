@@ -8,6 +8,11 @@ out/
 
 # IntelliJ IDEA
 .idea/
+.idea/*
+.idea/*/
+
+src/main/resources/application.yaml
+
 *.iml
 *.ipr
 *.iws

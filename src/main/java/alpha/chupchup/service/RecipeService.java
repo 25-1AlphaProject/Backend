@@ -6,7 +6,6 @@ import alpha.chupchup.entity.User;
 import alpha.chupchup.entity.UserRecipeFavorite;
 import alpha.chupchup.repository.RecipeRepository;
 import alpha.chupchup.repository.UserRecipeFavoriteRepository;
-import alpha.chupchup.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +22,6 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
     private final UserRecipeFavoriteRepository userRecipeFavoriteRepository;
-    private final UserRepository userRepository;
 
     @Transactional
     public void postRecipeFavorite(User user, Long recipeId) {

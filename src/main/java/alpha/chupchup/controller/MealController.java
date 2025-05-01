@@ -1,6 +1,7 @@
 package alpha.chupchup.controller;
 
 import alpha.chupchup.dto.*;
+import alpha.chupchup.dto.CookeryResponseDto;
 import alpha.chupchup.service.MealService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

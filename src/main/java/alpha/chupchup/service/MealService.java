@@ -1,6 +1,7 @@
 package alpha.chupchup.service;
 
 import alpha.chupchup.dto.*;
+import alpha.chupchup.dto.CookeryResponseDto;
 import alpha.chupchup.entity.RealEat;
 import alpha.chupchup.entity.Recipe;
 import alpha.chupchup.entity.User;
@@ -22,6 +23,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 @Service
 @Transactional(readOnly = true)
@@ -42,7 +45,7 @@ public class MealService {
                     Recipe recipe = meal.getRecipe();
                     return MealDto.builder()
                             .name(recipe.getName())
-                            .recipeText(recipe.getRecipeText())
+                            .recipeTexts(getRecipeTexts(recipe))
                             .calories(recipe.getCalories())
                             .carbohydrates(recipe.getCarbohydrates())
                             .protein(recipe.getProtein())
@@ -75,7 +78,7 @@ public class MealService {
     public CookeryResponseDto getCookery(Long mealId) {
         WeeklyMeal meal = mealRepository.findById(mealId)
                 .orElseThrow(() -> new RuntimeException("해당 식단이 존재하지 않습니다."));
-        String recipeText = meal.getRecipe().getRecipeText();
+        List<String> recipeText = getRecipeTexts(meal.getRecipe());
         return new CookeryResponseDto(recipeText);
     }
 
@@ -125,7 +128,7 @@ public class MealService {
                         Recipe recipe = meal.getRecipe();
                         return MealDto.builder()
                                 .name(recipe.getName())
-                                .recipeText(recipe.getRecipeText())
+                                .recipeTexts(getRecipeTexts(recipe))
                                 .calories(recipe.getCalories())
                                 .carbohydrates(recipe.getCarbohydrates())
                                 .protein(recipe.getProtein())
@@ -169,5 +172,18 @@ public class MealService {
                 .toList();
 
         return new IngredientLinksRequestDto(ingredients);
+    }
+
+    List<String> getRecipeTexts(Recipe recipe) {
+        return Stream.of(
+                        recipe.getRecipeText1(),
+                        recipe.getRecipeText2(),
+                        recipe.getRecipeText3(),
+                        recipe.getRecipeText4(),
+                        recipe.getRecipeText5(),
+                        recipe.getRecipeText6()
+                )
+                .filter(Objects::nonNull)
+                .toList();
     }
 }

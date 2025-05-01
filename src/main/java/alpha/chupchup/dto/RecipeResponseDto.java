@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -12,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class RecipeResponseDto {
 
     private String name;
-    private String recipeText;
+    private List<String> recipeTexts;
     private Float calories;
     private Float carbohydrates;
     private Float protein;

@@ -24,8 +24,12 @@ public class Recipe {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(columnDefinition = "LONGTEXT")
-    private String recipeText;
+    private String recipeText1;
+    private String recipeText2;
+    private String recipeText3;
+    private String recipeText4;
+    private String recipeText5;
+    private String recipeText6;
 
     private Float calories;
     private Float carbohydrates;

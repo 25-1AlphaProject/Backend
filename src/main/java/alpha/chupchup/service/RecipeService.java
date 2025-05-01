@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @Transactional(readOnly = true)
@@ -56,39 +58,36 @@ public class RecipeService {
         List<UserRecipeFavorite> recipes = userRecipeFavoriteRepository.findAllByUserId(userId);
 
         return recipes.stream()
-                .map(fav -> {
-                    // Recipe 엔티티에서 필요한 필드를 가져옴
-                    return new RecipeResponseDto(
-                            fav.getRecipe().getName(),
-                            fav.getRecipe().getRecipeText(),
-                            fav.getRecipe().getCalories(),
-                            fav.getRecipe().getCarbohydrates(),
-                            fav.getRecipe().getProtein(),
-                            fav.getRecipe().getFat(),
-                            fav.getRecipe().getSodium(),
-                            fav.getRecipe().getFoodImage(),
-                            fav.getRecipe().getIngredient(),
-                            fav.getRecipe().getFoodType()
-                    );
-                })
+                .map(fav -> RecipeResponseDto.builder()
+                        .name(fav.getRecipe().getName())
+                        .recipeTexts(getRecipeTexts(fav.getRecipe()))
+                        .calories(fav.getRecipe().getCalories())
+                        .carbohydrates(fav.getRecipe().getCarbohydrates())
+                        .protein(fav.getRecipe().getProtein())
+                        .fat(fav.getRecipe().getFat())
+                        .sodium(fav.getRecipe().getSodium())
+                        .foodImage(fav.getRecipe().getFoodImage())
+                        .ingredient(fav.getRecipe().getIngredient())
+                        .foodType(fav.getRecipe().getFoodType())
+                        .build())
                 .toList();
     }
 
     public List<RecipeResponseDto> searchRecipe(String keyword) {
         List<Recipe> recipes = recipeRepository.searchRecipes(keyword);
         return recipes.stream()
-                .map(recipe -> new RecipeResponseDto(
-                        recipe.getName(),
-                        recipe.getRecipeText(),
-                        recipe.getCalories(),
-                        recipe.getCarbohydrates(),
-                        recipe.getProtein(),
-                        recipe.getFat(),
-                        recipe.getSodium(),
-                        recipe.getFoodImage(),
-                        recipe.getIngredient(),
-                        recipe.getFoodType()
-                ))
+                .map(r -> RecipeResponseDto.builder()
+                        .name(r.getName())
+                        .recipeTexts(getRecipeTexts(r))
+                        .calories(r.getCalories())
+                        .carbohydrates(r.getCarbohydrates())
+                        .protein(r.getProtein())
+                        .fat(r.getFat())
+                        .sodium(r.getSodium())
+                        .foodImage(r.getFoodImage())
+                        .ingredient(r.getIngredient())
+                        .foodType(r.getFoodType())
+                        .build())
                 .toList();
     }
 
@@ -96,17 +95,30 @@ public class RecipeService {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new RuntimeException("해당 레시피를 찾을 수 없습니다."));
 
-        return new RecipeResponseDto(
-                recipe.getName(),
-                recipe.getRecipeText(),
-                recipe.getCalories(),
-                recipe.getCarbohydrates(),
-                recipe.getProtein(),
-                recipe.getFat(),
-                recipe.getSodium(),
-                recipe.getFoodImage(),
-                recipe.getIngredient(),
-                recipe.getFoodType()
-        );
+        return RecipeResponseDto.builder()
+                .name(recipe.getName())
+                .recipeTexts(getRecipeTexts(recipe))
+                .calories(recipe.getCalories())
+                .carbohydrates(recipe.getCarbohydrates())
+                .protein(recipe.getProtein())
+                .fat(recipe.getFat())
+                .sodium(recipe.getSodium())
+                .foodImage(recipe.getFoodImage())
+                .ingredient(recipe.getIngredient())
+                .foodType(recipe.getFoodType())
+                .build();
+    }
+
+    List<String> getRecipeTexts(Recipe recipe) {
+        return Stream.of(
+                recipe.getRecipeText1(),
+                recipe.getRecipeText2(),
+                recipe.getRecipeText3(),
+                recipe.getRecipeText4(),
+                recipe.getRecipeText5(),
+                recipe.getRecipeText6()
+        )
+        .filter(Objects::nonNull)
+        .toList();
     }
 }

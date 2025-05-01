@@ -3,14 +3,16 @@ package alpha.chupchup.controller;
 import alpha.chupchup.dto.RecipeResponseDto;
 import alpha.chupchup.dto.RecipeSearchRequestDto;
 import alpha.chupchup.dto.ResponseDto;
+import alpha.chupchup.entity.User;
+import alpha.chupchup.security.CustomUserDetails;
 import alpha.chupchup.service.RecipeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,11 +33,11 @@ public class RecipeController {
                     required = true
             )
             @PathVariable Long recipeId,
-            HttpServletRequest servletRequest
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         try {
-            Long userId = 0L;
-            recipeService.postRecipeFavorite(userId, recipeId);
+            User user = userDetails.getUser();
+            recipeService.postRecipeFavorite(user, recipeId);
             return ResponseEntity.ok(ResponseDto.success("좋아요 추가에 성공했습니다."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -51,11 +53,11 @@ public class RecipeController {
                     required = true
             )
             @PathVariable Long recipeId,
-            HttpServletRequest servletRequest
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         try {
-            Long userId = 0L;
-            recipeService.deleteRecipeFavorite(userId, recipeId);
+            User user = userDetails.getUser();
+            recipeService.deleteRecipeFavorite(user, recipeId);
             return ResponseEntity.ok(ResponseDto.success("좋아요 삭제에 성공습니다."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -65,10 +67,12 @@ public class RecipeController {
 
     @GetMapping("/favorite")
     @Operation(summary = "좋아요 누른 레시피 조회하기", description = "좋아요를 눌렀던 레시피를 조회합니다.")
-    public ResponseEntity<ResponseDto<?>> getFavoriteRecipe(HttpServletRequest servletRequest) {
+    public ResponseEntity<ResponseDto<?>> getFavoriteRecipe(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
         try {
-            Long userId = 0L;
-            List<RecipeResponseDto> favoriteRecipe = recipeService.getFavoriteRecipe(userId);
+            User user = userDetails.getUser();
+            List<RecipeResponseDto> favoriteRecipe = recipeService.getFavoriteRecipe(user);
             return ResponseEntity.ok(ResponseDto.success(favoriteRecipe));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

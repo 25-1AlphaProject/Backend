@@ -38,8 +38,8 @@ public class MealService {
     @Value("{fast-api.url}")
     private String fastApiUrl;
 
-    public List<MealDto> getOneDayMealByDate(Long userId, LocalDateTime localDateTime) {
-        List<RealEat> realEatList = realEatRepository.findAllByUserIdAndMealDateOrderByIdAsc(userId, localDateTime);
+    public List<MealDto> getOneDayMealByDate(User user, LocalDateTime localDateTime) {
+        List<RealEat> realEatList = realEatRepository.findAllByUserAndMealDateOrderByIdAsc(user, localDateTime);
         return realEatList.stream()
                 .map(meal -> {
                     Recipe recipe = meal.getRecipe();
@@ -62,15 +62,15 @@ public class MealService {
     }
 
     @Transactional
-    public void registerPreference(PreferenceRequestDto requestDto, Long userId) {
-        RealEat realEat = realEatRepository.findByIdAndUserId(requestDto.getRealEatId(), userId)
+    public void registerPreference(PreferenceRequestDto requestDto, User user) {
+        RealEat realEat = realEatRepository.findByIdAndUser(requestDto.getRealEatId(), user)
                 .orElseThrow(() -> new RuntimeException("해당 RealEat 기록이 존재하지 않습니다."));
         realEat.setPreference(requestDto.getPreference());
     }
 
     @Transactional
-    public void deletePreference(Long userId, Long realEatId) {
-        RealEat realEat = realEatRepository.findByIdAndUserId(realEatId, userId)
+    public void deletePreference(User user, Long realEatId) {
+        RealEat realEat = realEatRepository.findByIdAndUser(realEatId, user)
                 .orElseThrow(() -> new RuntimeException("해당 RealEat 기록이 존재하지 않습니다."));
         realEat.setPreference(null);
     }
@@ -103,11 +103,11 @@ public class MealService {
     }
 
     @Transactional
-    public void deleteRealEatByRealEatId(Long userId, Long realEatId) {
+    public void deleteRealEatByRealEatId(User user, Long realEatId) {
         RealEat realEat = realEatRepository.findById(realEatId)
                 .orElseThrow(() -> new RuntimeException("해당 실제 먹은 식단을 찾을 수 없습니다."));
 
-        if (realEat.getUser().getId().equals(userId)) {
+        if (realEat.getUser().equals(user)) {
             realEatRepository.delete(realEat);
         } else {
             throw new RuntimeException("해당 유저의 식단이 아닌 것을 삭제하려고 합니다.");

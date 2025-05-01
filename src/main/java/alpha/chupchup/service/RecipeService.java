@@ -26,14 +26,12 @@ public class RecipeService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void postRecipeFavorite(Long userId, Long recipeId) {
-        Optional<UserRecipeFavorite> recipeFavorite = userRecipeFavoriteRepository.findByUserIdAndRecipeId(userId, recipeId);
+    public void postRecipeFavorite(User user, Long recipeId) {
+        Optional<UserRecipeFavorite> recipeFavorite = userRecipeFavoriteRepository.findByUserAndRecipeId(user, recipeId);
         if (recipeFavorite.isPresent()) {
             throw new RuntimeException("이미 등록된 좋아요입니다.");
         }
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new RuntimeException("레시피를 찾을 수 없습니다."));
         UserRecipeFavorite favorite = UserRecipeFavorite.builder()
@@ -44,18 +42,18 @@ public class RecipeService {
     }
 
     @Transactional
-    public void deleteRecipeFavorite(Long userId, Long recipeId) {
-        UserRecipeFavorite favorite = userRecipeFavoriteRepository.findByUserIdAndRecipeId(userId, recipeId)
+    public void deleteRecipeFavorite(User user, Long recipeId) {
+        UserRecipeFavorite favorite = userRecipeFavoriteRepository.findByUserAndRecipeId(user, recipeId)
                 .orElseThrow(() -> new RuntimeException("즐겨찾기 기록이 존재하지 않습니다."));
-        if (favorite.getUser().getId().equals(userId)) {
+        if (favorite.getUser().equals(user)) {
             userRecipeFavoriteRepository.delete(favorite);
         } else {
             throw new RuntimeException("해당 유저가 등록한 즐겨찾기가 아닙니다.");
         }
     }
 
-    public List<RecipeResponseDto> getFavoriteRecipe(Long userId) {
-        List<UserRecipeFavorite> recipes = userRecipeFavoriteRepository.findAllByUserId(userId);
+    public List<RecipeResponseDto> getFavoriteRecipe(User user) {
+        List<UserRecipeFavorite> recipes = userRecipeFavoriteRepository.findAllByUser(user);
 
         return recipes.stream()
                 .map(fav -> RecipeResponseDto.builder()

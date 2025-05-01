@@ -37,10 +37,8 @@ public class Recipe {
     private Float fat;
     private Float sodium;
 
-    @Column(length = 255)
     private String foodImage;
 
-    @Column(length = 255)
     private String ingredient;
 
     @Column(length = 50)

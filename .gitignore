@@ -19,7 +19,6 @@ src/main/resources/application.yaml
 
 # 설정 파일 (로컬 환경/보안)
 src/main/resources/application.properties
-src/main/resource/application.yaml
 
 # 로그 파일
 *.log

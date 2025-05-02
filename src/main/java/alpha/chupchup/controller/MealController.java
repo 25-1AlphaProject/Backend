@@ -2,6 +2,7 @@ package alpha.chupchup.controller;
 
 import alpha.chupchup.dto.*;
 import alpha.chupchup.dto.CookeryResponseDto;
+import alpha.chupchup.entity.UserDetail;
 import alpha.chupchup.service.MealService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -10,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -31,10 +33,10 @@ public class MealController {
                     required = true
             )
             @PathVariable("date") LocalDateTime dateTime,
-            HttpServletRequest servletRequest
+            @AuthenticationPrincipal UserDetail userDetail
     ) {
         try {
-            Long userId = 0L;
+            Long userId = userDetail.getId();
             List<MealDto> meals = mealService.getOneDayMealByDate(userId, dateTime);
             return ResponseEntity.ok(ResponseDto.success(meals));
         } catch (Exception e) {
@@ -48,10 +50,10 @@ public class MealController {
     @Operation(summary = "선호도 등록하기", description = "식단에 선호도를 등록합니다.")
     public ResponseEntity<ResponseDto<String>> registerPreference(
             @RequestBody PreferenceRequestDto requestDto,
-            HttpServletRequest servletRequest
+            @AuthenticationPrincipal UserDetail userDetail
     ) {
         try {
-            Long userId = 0L;
+            Long userId = userDetail.getId();
             mealService.registerPreference(requestDto, userId);
             return ResponseEntity.ok(ResponseDto.success("선호도가 정상적으로 등록되었습니다."));
         } catch (Exception e) {
@@ -68,10 +70,10 @@ public class MealController {
                     required = true
             )
             @PathVariable("mealId") Long realEatId,
-            HttpServletRequest servletRequest
+            @AuthenticationPrincipal UserDetail userDetail
     ) {
         try {
-            Long userId = 0L;
+            Long userId = userDetail.getId();
             mealService.deletePreference(userId, realEatId);
             return ResponseEntity.ok(ResponseDto.success("선호도가 정상적으로 삭제되었습니다."));
         } catch (Exception e) {
@@ -118,10 +120,10 @@ public class MealController {
                     required = true
             )
             @PathVariable Long realEatId,
-            HttpServletRequest servletRequest
+            @AuthenticationPrincipal UserDetail userDetail
     ) {
         try {
-            Long userId = 0L;
+            Long userId = userDetail.getId();
             mealService.deleteRealEatByRealEatId(userId, realEatId);
             return ResponseEntity.ok(ResponseDto.success("식단이 정상적으로 삭제되었습니다."));
         } catch (Exception e) {
@@ -132,9 +134,11 @@ public class MealController {
 
     @GetMapping("/weekly")
     @Operation(summary = "일주일 식단 생성하기", description = "일주일 식단을 생성합니다.")
-    public ResponseEntity<ResponseDto<?>> generateWeeklyMeal(HttpServletRequest servletRequest) {
+    public ResponseEntity<ResponseDto<?>> generateWeeklyMeal(
+            @AuthenticationPrincipal UserDetail userDetail
+    ) {
         try {
-            Long userId = 0L;
+            Long userId = userDetail.getId();
             return ResponseEntity.ok(ResponseDto.success(mealService.generateWeeklyMeal(userId)));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

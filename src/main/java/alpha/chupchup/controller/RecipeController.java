@@ -3,6 +3,7 @@ package alpha.chupchup.controller;
 import alpha.chupchup.dto.RecipeResponseDto;
 import alpha.chupchup.dto.RecipeSearchRequestDto;
 import alpha.chupchup.dto.ResponseDto;
+import alpha.chupchup.entity.UserDetail;
 import alpha.chupchup.service.RecipeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,10 +33,10 @@ public class RecipeController {
                     required = true
             )
             @PathVariable Long recipeId,
-            HttpServletRequest servletRequest
-    ) {
+            @AuthenticationPrincipal UserDetail userDetail
+            ) {
         try {
-            Long userId = 0L;
+            Long userId = userDetail.getId();
             recipeService.postRecipeFavorite(userId, recipeId);
             return ResponseEntity.ok(ResponseDto.success("좋아요 추가에 성공했습니다."));
         } catch (Exception e) {
@@ -51,10 +53,10 @@ public class RecipeController {
                     required = true
             )
             @PathVariable Long recipeId,
-            HttpServletRequest servletRequest
+            @AuthenticationPrincipal UserDetail userDetail
     ) {
         try {
-            Long userId = 0L;
+            Long userId = userDetail.getId();
             recipeService.deleteRecipeFavorite(userId, recipeId);
             return ResponseEntity.ok(ResponseDto.success("좋아요 삭제에 성공습니다."));
         } catch (Exception e) {
@@ -65,9 +67,11 @@ public class RecipeController {
 
     @GetMapping("/favorite")
     @Operation(summary = "좋아요 누른 레시피 조회하기", description = "좋아요를 눌렀던 레시피를 조회합니다.")
-    public ResponseEntity<ResponseDto<?>> getFavoriteRecipe(HttpServletRequest servletRequest) {
+    public ResponseEntity<ResponseDto<?>> getFavoriteRecipe(
+            @AuthenticationPrincipal UserDetail userDetail
+    ) {
         try {
-            Long userId = 0L;
+            Long userId = userDetail.getId();
             List<RecipeResponseDto> favoriteRecipe = recipeService.getFavoriteRecipe(userId);
             return ResponseEntity.ok(ResponseDto.success(favoriteRecipe));
         } catch (Exception e) {
@@ -78,7 +82,9 @@ public class RecipeController {
 
     @GetMapping("/search")
     @Operation(summary = "레시피 검색하기", description = "키워드를 이용해서 관련된 레시피를 검색합니다.")
-    public ResponseEntity<ResponseDto<?>> searchRecipe(@RequestBody RecipeSearchRequestDto requestDto) {
+    public ResponseEntity<ResponseDto<?>> searchRecipe(
+            @RequestBody RecipeSearchRequestDto requestDto
+    ) {
         try {
             String keyword = requestDto.getKeyword();
             List<RecipeResponseDto> searchRecipe = recipeService.searchRecipe(keyword);

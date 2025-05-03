@@ -5,6 +5,7 @@ import alpha.chupchup.entity.User;
 import alpha.chupchup.repository.UserRepository;
 import alpha.chupchup.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -43,5 +44,40 @@ public class UserService {
 
         String token = jwtUtil.createToken(user.getUsername());
         return new LoginResponseDto("success", "로그인 성공", token);
+    }
+
+    public UserInfoResponseDto getMyInfo() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
+
+        return new UserInfoResponseDto(
+                user.getUsername(),
+                user.getNickname(),
+                user.getName(),
+                user.getPhoneNumber(),
+                user.getProfileImageUrl(),
+                user.getCreatedAt()
+        );
+    }
+
+    public void updateMyInfo(UserInfoUpdateRequestDto dto) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
+
+        user.setNickname(dto.getNickname());
+        user.setProfileImageUrl(dto.getProfile_image_url());
+
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+    }
+
+    public void deleteMyAccount() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
+        userRepository.delete(user);
     }
 }

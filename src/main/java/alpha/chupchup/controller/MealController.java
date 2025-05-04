@@ -138,8 +138,8 @@ public class MealController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         try {
-            Long userId = userDetails.getUser().getId();
-            return ResponseEntity.ok(ResponseDto.success(mealService.generateWeeklyMeal(userId)));
+            User user = userDetails.getUser();
+            return ResponseEntity.ok(ResponseDto.success(mealService.generateWeeklyMeal(user)));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ResponseDto.error("식단 생성에 실패했습니다."));

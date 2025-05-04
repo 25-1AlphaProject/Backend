@@ -2,14 +2,8 @@ package alpha.chupchup.service;
 
 import alpha.chupchup.dto.*;
 import alpha.chupchup.dto.CookeryResponseDto;
-import alpha.chupchup.entity.RealEat;
-import alpha.chupchup.entity.Recipe;
-import alpha.chupchup.entity.User;
-import alpha.chupchup.entity.WeeklyMeal;
-import alpha.chupchup.repository.MealRepository;
-import alpha.chupchup.repository.RealEatRepository;
-import alpha.chupchup.repository.RecipeRepository;
-import alpha.chupchup.repository.UserRepository;
+import alpha.chupchup.entity.*;
+import alpha.chupchup.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -35,6 +29,7 @@ public class MealService {
     private final UserRepository userRepository;
     private final RecipeRepository recipeRepository;
     private final RestTemplate restTemplate;
+    private final UserDetailRepository userDetailRepository;
     @Value("{fast-api.url}")
     private String fastApiUrl;
 
@@ -114,14 +109,27 @@ public class MealService {
         }
     }
 
-    public List<MealDto> generateWeeklyMeal(Long userId) {
-        String requestUrl = fastApiUrl + "?userId=" + userId;
-        ResponseEntity<FastApiResponseDto> response = restTemplate.postForEntity(requestUrl, null, FastApiResponseDto.class);
+    public List<MealDto> generateWeeklyMeal(User user) {
+        UserDetail userDetail = userDetailRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("해당 유저 아이디의 유저디테일을 가져올 수 없습니다."));
+
+        FastApiMealRequestDto fastApiRequest = FastApiMealRequestDto.builder()
+                .user_id(user.getId())
+                .gender(userDetail.getGender())
+                .age(userDetail.getAge())
+                .weight(userDetail.getWeight())
+                .meal_count(userDetail.getMealCount())
+                .target_calories(userDetail.getTargetCalories())
+                .user_diet_info(userDetail.getUserDietInfo())
+                .build();
+
+        HttpEntity<FastApiMealRequestDto> entity = new HttpEntity<>(fastApiRequest);
+        ResponseEntity<FastApiResponseDto> response = restTemplate.postForEntity(fastApiUrl, entity, FastApiResponseDto.class);
 
         if (response.getStatusCode() == HttpStatus.OK && response.getBody().isSuccess()) {
             LocalDateTime startDay = LocalDate.now().atStartOfDay();
             LocalDateTime startDayTomorrow = LocalDate.now().plusDays(1).atStartOfDay();
-            List<WeeklyMeal> weeklyMeals = mealRepository.findByUserIdAndCreatedAtBetween(userId, startDay, startDayTomorrow);
+            List<WeeklyMeal> weeklyMeals = mealRepository.findByUserIdAndCreatedAtBetween(user.getId(), startDay, startDayTomorrow);
 
             return weeklyMeals.stream()
                     .map(meal -> {

@@ -78,8 +78,7 @@ public class MealService {
     }
 
     @Transactional
-    public void postRealEat(RealEatPostRequestDto requestDto) {
-        Long userId = 0L; //jwt 토큰에서 받아올 예정
+    public void postRealEat(RealEatPostRequestDto requestDto, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 

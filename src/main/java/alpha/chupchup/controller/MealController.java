@@ -102,9 +102,13 @@ public class MealController {
 
     @PostMapping("/real-eat")
     @Operation(summary = "실제 먹은 식단 추가하기", description = "실제로 먹은 식단을 추가합니다.")
-    public ResponseEntity<ResponseDto<String>> postRealEat(@RequestBody RealEatPostRequestDto requestDto) {
+    public ResponseEntity<ResponseDto<String>> postRealEat(
+            @RequestBody RealEatPostRequestDto requestDto,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
         try {
-            mealService.postRealEat(requestDto);
+            Long userId = userDetails.getUser().getId();
+            mealService.postRealEat(requestDto, userId);
             return ResponseEntity.ok(ResponseDto.success("식단이 정상적으로 등록되었습니다."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

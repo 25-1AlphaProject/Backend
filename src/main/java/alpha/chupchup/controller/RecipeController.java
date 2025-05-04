@@ -106,6 +106,7 @@ public class RecipeController {
             RecipeResponseDto recipe = recipeService.getRecipeByRecipeId(recipeId);
             return ResponseEntity.ok(ResponseDto.success(recipe));
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ResponseDto.error("레시피 조회에 실패했습니다."));
         }

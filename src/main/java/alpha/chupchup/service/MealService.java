@@ -38,8 +38,8 @@ public class MealService {
     @Value("{fast-api.url}")
     private String fastApiUrl;
 
-    public List<MealDto> getOneDayMealByDate(User user, LocalDateTime localDateTime) {
-        List<RealEat> realEatList = realEatRepository.findAllByUserAndMealDateOrderByIdAsc(user, localDateTime);
+    public List<MealDto> getOneDayMealByDate(Long userId, LocalDateTime localDateTime) {
+        List<RealEat> realEatList = realEatRepository.findAllByUserIdAndMealDateOrderByIdAsc(userId, localDateTime);
         return realEatList.stream()
                 .map(meal -> {
                     Recipe recipe = meal.getRecipe();
@@ -62,15 +62,15 @@ public class MealService {
     }
 
     @Transactional
-    public void registerPreference(PreferenceRequestDto requestDto, User user) {
-        RealEat realEat = realEatRepository.findByIdAndUser(requestDto.getRealEatId(), user)
+    public void registerPreference(PreferenceRequestDto requestDto, Long userId) {
+        RealEat realEat = realEatRepository.findByIdAndUserId(requestDto.getRealEatId(), userId)
                 .orElseThrow(() -> new RuntimeException("해당 RealEat 기록이 존재하지 않습니다."));
         realEat.setPreference(requestDto.getPreference());
     }
 
     @Transactional
-    public void deletePreference(User user, Long realEatId) {
-        RealEat realEat = realEatRepository.findByIdAndUser(realEatId, user)
+    public void deletePreference(Long userId, Long realEatId) {
+        RealEat realEat = realEatRepository.findByIdAndUserId(realEatId, userId)
                 .orElseThrow(() -> new RuntimeException("해당 RealEat 기록이 존재하지 않습니다."));
         realEat.setPreference(null);
     }

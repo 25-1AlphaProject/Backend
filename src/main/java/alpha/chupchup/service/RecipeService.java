@@ -6,6 +6,7 @@ import alpha.chupchup.entity.User;
 import alpha.chupchup.entity.UserRecipeFavorite;
 import alpha.chupchup.repository.RecipeRepository;
 import alpha.chupchup.repository.UserRecipeFavoriteRepository;
+import alpha.chupchup.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,16 +23,20 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
     private final UserRecipeFavoriteRepository userRecipeFavoriteRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public void postRecipeFavorite(User user, Long recipeId) {
-        Optional<UserRecipeFavorite> recipeFavorite = userRecipeFavoriteRepository.findByUserAndRecipeId(user, recipeId);
+    public void postRecipeFavorite(Long userId, Long recipeId) {
+        Optional<UserRecipeFavorite> recipeFavorite = userRecipeFavoriteRepository.findByUserIdAndRecipeId(userId, recipeId);
         if (recipeFavorite.isPresent()) {
             throw new RuntimeException("이미 등록된 좋아요입니다.");
         }
 
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new RuntimeException("레시피를 찾을 수 없습니다."));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다."));
+
         UserRecipeFavorite favorite = UserRecipeFavorite.builder()
                 .user(user)
                 .recipe(recipe)
@@ -40,9 +45,12 @@ public class RecipeService {
     }
 
     @Transactional
-    public void deleteRecipeFavorite(User user, Long recipeId) {
-        UserRecipeFavorite favorite = userRecipeFavoriteRepository.findByUserAndRecipeId(user, recipeId)
+    public void deleteRecipeFavorite(Long userId, Long recipeId) {
+        UserRecipeFavorite favorite = userRecipeFavoriteRepository.findByUserIdAndRecipeId(userId, recipeId)
                 .orElseThrow(() -> new RuntimeException("즐겨찾기 기록이 존재하지 않습니다."));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다."));
+
         if (favorite.getUser().equals(user)) {
             userRecipeFavoriteRepository.delete(favorite);
         } else {
@@ -50,8 +58,8 @@ public class RecipeService {
         }
     }
 
-    public List<RecipeResponseDto> getFavoriteRecipe(User user) {
-        List<UserRecipeFavorite> recipes = userRecipeFavoriteRepository.findAllByUser(user);
+    public List<RecipeResponseDto> getFavoriteRecipe(Long userId) {
+        List<UserRecipeFavorite> recipes = userRecipeFavoriteRepository.findAllByUserId(userId);
 
         return recipes.stream()
                 .map(fav -> RecipeResponseDto.builder()

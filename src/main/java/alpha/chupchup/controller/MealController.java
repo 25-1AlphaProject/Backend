@@ -3,6 +3,7 @@ package alpha.chupchup.controller;
 import alpha.chupchup.dto.*;
 import alpha.chupchup.entity.User;
 import alpha.chupchup.security.CustomUserDetails;
+import alpha.chupchup.dto.CookeryResponseDto;
 import alpha.chupchup.service.MealService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,8 +36,8 @@ public class MealController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         try {
-            User user = userDetails.getUser();
-            List<MealDto> meals = mealService.getOneDayMealByDate(user, dateTime);
+            Long userId = userDetails.getUser().getId();
+            List<MealDto> meals = mealService.getOneDayMealByDate(userId, dateTime);
             return ResponseEntity.ok(ResponseDto.success(meals));
         } catch (Exception e) {
             return ResponseEntity
@@ -52,8 +53,8 @@ public class MealController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         try {
-            User user = userDetails.getUser();
-            mealService.registerPreference(requestDto, user);
+            Long userId = userDetails.getUser().getId();
+            mealService.registerPreference(requestDto, userId);
             return ResponseEntity.ok(ResponseDto.success("선호도가 정상적으로 등록되었습니다."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -72,8 +73,8 @@ public class MealController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         try {
-            User user = userDetails.getUser();
-            mealService.deletePreference(user, realEatId);
+            Long userId = userDetails.getUser().getId();
+            mealService.deletePreference(userId, realEatId);
             return ResponseEntity.ok(ResponseDto.success("선호도가 정상적으로 삭제되었습니다."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

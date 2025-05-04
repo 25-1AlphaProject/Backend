@@ -3,7 +3,6 @@ package alpha.chupchup.controller;
 import alpha.chupchup.dto.RecipeResponseDto;
 import alpha.chupchup.dto.RecipeSearchRequestDto;
 import alpha.chupchup.dto.ResponseDto;
-import alpha.chupchup.entity.User;
 import alpha.chupchup.security.CustomUserDetails;
 import alpha.chupchup.service.RecipeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,8 +35,8 @@ public class RecipeController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         try {
-            User user = userDetails.getUser();
-            recipeService.postRecipeFavorite(user, recipeId);
+            Long userId = userDetails.getUser().getId();
+            recipeService.postRecipeFavorite(userId, recipeId);
             return ResponseEntity.ok(ResponseDto.success("좋아요 추가에 성공했습니다."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -56,8 +55,8 @@ public class RecipeController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         try {
-            User user = userDetails.getUser();
-            recipeService.deleteRecipeFavorite(user, recipeId);
+            Long userId = userDetails.getUser().getId();
+            recipeService.deleteRecipeFavorite(userId, recipeId);
             return ResponseEntity.ok(ResponseDto.success("좋아요 삭제에 성공습니다."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -71,8 +70,8 @@ public class RecipeController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         try {
-            User user = userDetails.getUser();
-            List<RecipeResponseDto> favoriteRecipe = recipeService.getFavoriteRecipe(user);
+            Long userId = userDetails.getUser().getId();
+            List<RecipeResponseDto> favoriteRecipe = recipeService.getFavoriteRecipe(userId);
             return ResponseEntity.ok(ResponseDto.success(favoriteRecipe));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -82,7 +81,9 @@ public class RecipeController {
 
     @GetMapping("/search")
     @Operation(summary = "레시피 검색하기", description = "키워드를 이용해서 관련된 레시피를 검색합니다.")
-    public ResponseEntity<ResponseDto<?>> searchRecipe(@RequestBody RecipeSearchRequestDto requestDto) {
+    public ResponseEntity<ResponseDto<?>> searchRecipe(
+            @RequestBody RecipeSearchRequestDto requestDto
+    ) {
         try {
             String keyword = requestDto.getKeyword();
             List<RecipeResponseDto> searchRecipe = recipeService.searchRecipe(keyword);
@@ -106,7 +107,6 @@ public class RecipeController {
             RecipeResponseDto recipe = recipeService.getRecipeByRecipeId(recipeId);
             return ResponseEntity.ok(ResponseDto.success(recipe));
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ResponseDto.error("레시피 조회에 실패했습니다."));
         }

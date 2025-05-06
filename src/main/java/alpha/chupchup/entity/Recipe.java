@@ -24,11 +24,22 @@ public class Recipe {
     @Column(nullable = false, length = 100)
     private String name;
 
+    @Column(columnDefinition = "TEXT")
     private String recipeText1;
+
+    @Column(columnDefinition = "TEXT")
     private String recipeText2;
+
+    @Column(columnDefinition = "TEXT")
     private String recipeText3;
+
+    @Column(columnDefinition = "TEXT")
     private String recipeText4;
+
+    @Column(columnDefinition = "TEXT")
     private String recipeText5;
+
+    @Column(columnDefinition = "TEXT")
     private String recipeText6;
 
     private Float calories;
@@ -39,6 +50,7 @@ public class Recipe {
 
     private String foodImage;
 
+    @Column(columnDefinition = "TEXT")
     private String ingredient;
 
     @Column(length = 50)

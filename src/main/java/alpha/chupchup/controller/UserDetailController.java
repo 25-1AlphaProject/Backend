@@ -15,14 +15,14 @@ public class UserDetailController {
 
     private final UserDetailService userDetailService;
 
-    @Operation(summary = "식단 정보 조회", description = "나이, 키, 몸무게, 성별, 식사 횟수, 건강 목표 등 사용자의 식단 설정을 조회합니다.", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "식단 정보 저장", description = "최초 입력 시 사용자의 식단 설정 정보를 저장합니다.", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping
     public ResponseEntity<String> saveDietInfo(@RequestBody DietInfoRequestDto dto) {
         userDetailService.saveDietInfo(dto);
         return ResponseEntity.ok("식단 정보 저장 완료");
     }
 
-    @Operation(summary = "식단 정보 저장", description = "최초 입력 시 사용자의 식단 설정 정보를 저장합니다.", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "식단 정보 조회", description = "나이, 키, 몸무게, 성별, 식사 횟수, 건강 목표 등 사용자의 식단 설정을 조회합니다.", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping
     public ResponseEntity<UserDetailResponseDto> getDietInfo() {
         return ResponseEntity.ok(userDetailService.getDietInfo());

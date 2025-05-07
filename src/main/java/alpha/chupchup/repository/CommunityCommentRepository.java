@@ -1,6 +1,6 @@
 package alpha.chupchup.repository;
 
-import alpha.chupchup.entity.CommunityComment;
+import alpha.chupchup.entity.community.CommunityComment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

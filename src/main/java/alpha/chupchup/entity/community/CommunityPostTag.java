@@ -1,4 +1,4 @@
-package alpha.chupchup.entity;
+package alpha.chupchup.entity.community;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,5 +1,9 @@
 package alpha.chupchup.entity;
 
+import alpha.chupchup.entity.community.CommunityComment;
+import alpha.chupchup.entity.community.CommunityLike;
+import alpha.chupchup.entity.community.CommunityPost;
+import alpha.chupchup.entity.community.CommunityScrap;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

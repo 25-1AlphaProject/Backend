@@ -1,7 +1,7 @@
 package alpha.chupchup.service;
 
 import alpha.chupchup.dto.community.*;
-import alpha.chupchup.entity.CommunityPost;
+import alpha.chupchup.entity.community.CommunityPost;
 import alpha.chupchup.entity.User;
 import alpha.chupchup.repository.CommunityPostRepository;
 import alpha.chupchup.repository.UserRepository;

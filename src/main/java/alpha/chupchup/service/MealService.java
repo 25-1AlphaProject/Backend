@@ -1,7 +1,6 @@
 package alpha.chupchup.service;
 
 import alpha.chupchup.dto.*;
-import alpha.chupchup.dto.CookeryResponseDto;
 import alpha.chupchup.entity.*;
 import alpha.chupchup.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +31,33 @@ public class MealService {
     @Value("{fast-api.url}")
     private String fastApiUrl;
 
-    public List<MealDto> getOneDayMealByDate(Long userId, LocalDate date) {
+    public List<MealDto> getOneDayMealsByDate(Long userId, LocalDate date) {
+        List<WeeklyMeal> weeklyMeals = mealRepository.findAllByUserIdAndMealDate(
+                userId, date
+        );
+
+        return weeklyMeals.stream()
+                .map(meal -> {
+                    Recipe recipe = meal.getRecipe();
+                    return MealDto.builder()
+                            .name(recipe.getName())
+                            .recipeTexts(getRecipeTexts(recipe))
+                            .calories(recipe.getCalories())
+                            .carbohydrates(recipe.getCarbohydrates())
+                            .protein(recipe.getProtein())
+                            .fat(recipe.getFat())
+                            .sodium(recipe.getSodium())
+                            .foodImage(recipe.getFoodImage())
+                            .ingredient(recipe.getIngredient())
+                            .foodType(recipe.getFoodType())
+                            .mealType(meal.getMealType())
+                            .dateTime(meal.getCreatedAt())
+                            .build();
+                })
+                .toList();
+    }
+
+    public List<MealDto> getOneDayRealEatsByDate(Long userId, LocalDate date) {
 
         List<RealEat> realEatList = realEatRepository.findAllByUserIdAndMealDate(
                 userId, date
@@ -134,9 +158,10 @@ public class MealService {
         ResponseEntity<FastApiResponseDto> response = restTemplate.postForEntity(fastApiUrl, entity, FastApiResponseDto.class);
 
         if (response.getStatusCode() == HttpStatus.OK && response.getBody().isSuccess()) {
-            LocalDateTime startDay = LocalDate.now().atStartOfDay();
-            LocalDateTime startDayTomorrow = LocalDate.now().plusDays(1).atStartOfDay();
-            List<WeeklyMeal> weeklyMeals = mealRepository.findByUserIdAndCreatedAtBetween(user.getId(), startDay, startDayTomorrow);
+            LocalDate startDate = LocalDate.now();
+            LocalDate endDate   = startDate.plusDays(6);
+
+            List<WeeklyMeal> weeklyMeals = mealRepository.findByUserIdAndMealDateBetweenOrderByMealDateAsc(user.getId(), startDate, endDate);
 
             return weeklyMeals.stream()
                     .map(meal -> {

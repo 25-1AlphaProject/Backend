@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class WeeklyMeal {
     private MealType mealType;
 
     @Column(nullable = false)
-    private LocalDateTime mealDate;
+    private LocalDate mealDate;
 
     @Builder.Default
     @OneToMany(mappedBy = "weeklyMeal", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -61,13 +62,19 @@ public class UserService {
         );
     }
 
+    @Transactional
     public void updateMyInfo(UserInfoUpdateRequestDto dto) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
 
-        user.setNickname(dto.getNickname());
-        user.setProfileImageUrl(dto.getProfileImageUrl());
+        if (dto.getNickname() != null && !dto.getNickname().isBlank()) {
+            user.setNickname(dto.getNickname());
+        }
+
+        if (dto.getProfileImageUrl() != null && !dto.getProfileImageUrl().isBlank()) {
+            user.setProfileImageUrl(dto.getProfileImageUrl());
+        }
 
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(dto.getPassword()));

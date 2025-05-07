@@ -34,11 +34,9 @@ public class MealService {
     private String fastApiUrl;
 
     public List<MealDto> getOneDayMealByDate(Long userId, LocalDate date) {
-        LocalDateTime startOfDay = date.atStartOfDay();
-        LocalDateTime startOfNext = date.plusDays(1).atStartOfDay();
 
-        List<RealEat> realEatList = realEatRepository.findAllByUserIdAndMealDateBetweenOrderByMealDateAsc(
-                userId, startOfDay, startOfNext
+        List<RealEat> realEatList = realEatRepository.findAllByUserIdAndMealDate(
+                userId, date
         );
 
         return realEatList.stream()

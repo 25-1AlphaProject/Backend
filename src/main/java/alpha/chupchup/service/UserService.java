@@ -67,7 +67,7 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
 
         user.setNickname(dto.getNickname());
-        user.setProfileImageUrl(dto.getProfile_image_url());
+        user.setProfileImageUrl(dto.getProfileImageUrl());
 
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(dto.getPassword()));

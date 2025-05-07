@@ -34,12 +34,10 @@ public class RealEat {
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
-    @Column(length = 255)
     private String mealPhoto;
 
     private Float customFoodCalories;
 
-    @Column(length = 255)
     private String customFoodName;
 
     private LocalDate mealDate;

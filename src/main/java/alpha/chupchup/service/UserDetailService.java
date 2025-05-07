@@ -1,3 +1,4 @@
+// ===== UserDetailService.java =====
 package alpha.chupchup.service;
 
 import alpha.chupchup.dto.user.*;
@@ -6,11 +7,11 @@ import alpha.chupchup.entity.UserDetail;
 import alpha.chupchup.repository.UserDetailRepository;
 import alpha.chupchup.repository.UserRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 
 @Service
@@ -37,12 +38,12 @@ public class UserDetailService {
         detail.setHeight(dto.getHeight());
         detail.setWeight(dto.getWeight());
         detail.setTargetCalories(dto.getTargetCalories());
-        detail.setUserDietInfo(dto.getUserDietInfo());
 
         try {
             detail.setMealCount(objectMapper.writeValueAsString(dto.getMealCount()));
+            detail.setUserDietInfo(objectMapper.writeValueAsString(dto.getUserDietInfo()));
         } catch (Exception e) {
-            throw new RuntimeException("mealCounts 직렬화 실패", e);
+            throw new RuntimeException("직렬화 실패", e);
         }
 
         userDetailRepository.save(detail);
@@ -57,10 +58,12 @@ public class UserDetailService {
                 .orElseThrow(() -> new IllegalStateException("식단 정보가 없습니다."));
 
         List<String> mealCount;
+        UserDietInfoDto dietInfo;
         try {
             mealCount = objectMapper.readValue(detail.getMealCount(), new TypeReference<>() {});
+            dietInfo = objectMapper.readValue(detail.getUserDietInfo(), UserDietInfoDto.class);
         } catch (Exception e) {
-            throw new RuntimeException("mealCounts 역직렬화 실패", e);
+            throw new RuntimeException("역직렬화 실패", e);
         }
         return new UserDetailResponseDto(
                 detail.getAge(),
@@ -69,7 +72,7 @@ public class UserDetailService {
                 detail.getGender(),
                 mealCount,
                 detail.getTargetCalories(),
-                detail.getUserDietInfo()
+                dietInfo
         );
     }
 
@@ -88,14 +91,15 @@ public class UserDetailService {
         detail.setHeight(dto.getHeight());
         detail.setWeight(dto.getWeight());
         detail.setTargetCalories(dto.getTargetCalories());
-        detail.setUserDietInfo(dto.getUserDietInfo());
 
         try {
             detail.setMealCount(objectMapper.writeValueAsString(dto.getMealCount()));
+            detail.setUserDietInfo(objectMapper.writeValueAsString(dto.getUserDietInfo()));
         } catch (Exception e) {
-            throw new RuntimeException("mealCounts 직렬화 실패", e);
+            throw new RuntimeException("직렬화 실패", e);
         }
     }
+
     // mealCount 형식 유효성 검사
     private void validateMealCount(List<String> mealCounts) {
         List<String> allowed = List.of("아침", "점심", "저녁");

@@ -38,7 +38,7 @@ public class UserDetail {
     private int targetCalories;
 
     @Column(columnDefinition = "JSON", nullable = false)
-    private String userDietInfo; // JSON 문자열 저장
+    private String userDietInfo;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

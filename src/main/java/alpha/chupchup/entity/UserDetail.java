@@ -31,15 +31,14 @@ public class UserDetail {
     @Column(nullable = false)
     private double weight;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private MealCount mealCount;
+    @Column(columnDefinition = "JSON", nullable = false)
+    private String mealCount;
 
     @Column(nullable = false)
     private int targetCalories;
 
     @Column(columnDefinition = "JSON", nullable = false)
-    private String userDietInfo; // JSON 문자열 저장
+    private String userDietInfo;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

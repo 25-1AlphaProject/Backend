@@ -117,7 +117,7 @@ public class MealService {
                 .gender(userDetail.getGender())
                 .age(userDetail.getAge())
                 .weight(userDetail.getWeight())
-                .meal_count(userDetail.getMealCount())
+//                .meal_count(userDetail.getMealCount())
                 .target_calories(userDetail.getTargetCalories())
                 .user_diet_info(userDetail.getUserDietInfo())
                 .build();

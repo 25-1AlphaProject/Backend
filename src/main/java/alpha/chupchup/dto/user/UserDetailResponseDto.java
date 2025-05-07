@@ -1,9 +1,11 @@
 package alpha.chupchup.dto.user;
 
 import alpha.chupchup.entity.enums.Gender;
-import alpha.chupchup.entity.enums.MealCount;
+//import alpha.chupchup.entity.enums.MealCount;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -12,7 +14,7 @@ public class UserDetailResponseDto {
     private double height;
     private double weight;
     private Gender gender;
-    private MealCount mealCount;
+    private List<String> mealCounts;
     private int targetCalories;
     private String userDietInfo;
 }

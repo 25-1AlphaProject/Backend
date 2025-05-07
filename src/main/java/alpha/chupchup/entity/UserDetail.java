@@ -31,9 +31,8 @@ public class UserDetail {
     @Column(nullable = false)
     private double weight;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private MealCount mealCount;
+    @Column(columnDefinition = "JSON", nullable = false)
+    private String mealCount;
 
     @Column(nullable = false)
     private int targetCalories;

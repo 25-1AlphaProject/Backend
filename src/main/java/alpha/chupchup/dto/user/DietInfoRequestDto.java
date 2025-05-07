@@ -5,6 +5,8 @@ import alpha.chupchup.entity.enums.MealCount;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class DietInfoRequestDto {
@@ -12,7 +14,7 @@ public class DietInfoRequestDto {
     private double height;
     private double weight;
     private Gender gender;
-    private MealCount mealCount;
+    private List<String> mealCount;
     private int targetCalories;
     private String userDietInfo; // JSON 문자열
 }

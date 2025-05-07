@@ -5,16 +5,20 @@ import alpha.chupchup.entity.User;
 import alpha.chupchup.entity.UserDetail;
 import alpha.chupchup.repository.UserDetailRepository;
 import alpha.chupchup.repository.UserRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserDetailService {
-
     private final UserRepository userRepository;
     private final UserDetailRepository userDetailRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public void saveDietInfo(DietInfoRequestDto dto) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -24,16 +28,22 @@ public class UserDetailService {
         if (userDetailRepository.findByUser(user).isPresent()) {
             throw new IllegalStateException("이미 식단 정보가 등록되어 있습니다.");
         }
+        validateMealCount(dto.getMealCount());
 
         UserDetail detail = new UserDetail();
         detail.setUser(user);
         detail.setAge(dto.getAge());
         detail.setGender(dto.getGender());
-        detail.setMealCount(dto.getMealCount());
         detail.setHeight(dto.getHeight());
         detail.setWeight(dto.getWeight());
         detail.setTargetCalories(dto.getTargetCalories());
         detail.setUserDietInfo(dto.getUserDietInfo());
+
+        try {
+            detail.setMealCount(objectMapper.writeValueAsString(dto.getMealCount()));
+        } catch (Exception e) {
+            throw new RuntimeException("mealCounts 직렬화 실패", e);
+        }
 
         userDetailRepository.save(detail);
     }
@@ -46,12 +56,18 @@ public class UserDetailService {
         UserDetail detail = userDetailRepository.findByUser(user)
                 .orElseThrow(() -> new IllegalStateException("식단 정보가 없습니다."));
 
+        List<String> mealCount;
+        try {
+            mealCount = objectMapper.readValue(detail.getMealCount(), new TypeReference<>() {});
+        } catch (Exception e) {
+            throw new RuntimeException("mealCounts 역직렬화 실패", e);
+        }
         return new UserDetailResponseDto(
                 detail.getAge(),
                 detail.getHeight(),
                 detail.getWeight(),
                 detail.getGender(),
-                detail.getMealCount(),
+                mealCount,
                 detail.getTargetCalories(),
                 detail.getUserDietInfo()
         );
@@ -65,12 +81,28 @@ public class UserDetailService {
         UserDetail detail = userDetailRepository.findByUser(user)
                 .orElseThrow(() -> new IllegalStateException("식단 정보가 없습니다."));
 
+        validateMealCount(dto.getMealCount());
+
         detail.setAge(dto.getAge());
         detail.setGender(dto.getGender());
-        detail.setMealCount(dto.getMealCount());
         detail.setHeight(dto.getHeight());
         detail.setWeight(dto.getWeight());
         detail.setTargetCalories(dto.getTargetCalories());
         detail.setUserDietInfo(dto.getUserDietInfo());
+
+        try {
+            detail.setMealCount(objectMapper.writeValueAsString(dto.getMealCount()));
+        } catch (Exception e) {
+            throw new RuntimeException("mealCounts 직렬화 실패", e);
+        }
+    }
+    // mealCount 형식 유효성 검사
+    private void validateMealCount(List<String> mealCounts) {
+        List<String> allowed = List.of("아침", "점심", "저녁");
+        for (String meal : mealCounts) {
+            if (!allowed.contains(meal)) {
+                throw new IllegalArgumentException("유효하지 않은 식사 시간: " + meal);
+            }
+        }
     }
 }

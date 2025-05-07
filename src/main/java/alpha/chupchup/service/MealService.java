@@ -33,8 +33,14 @@ public class MealService {
     @Value("{fast-api.url}")
     private String fastApiUrl;
 
-    public List<MealDto> getOneDayMealByDate(Long userId, LocalDateTime localDateTime) {
-        List<RealEat> realEatList = realEatRepository.findAllByUserIdAndMealDateOrderByIdAsc(userId, localDateTime);
+    public List<MealDto> getOneDayMealByDate(Long userId, LocalDate date) {
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime startOfNext = date.plusDays(1).atStartOfDay();
+
+        List<RealEat> realEatList = realEatRepository.findAllByUserIdAndMealDateBetweenOrderByMealDateAsc(
+                userId, startOfDay, startOfNext
+        );
+
         return realEatList.stream()
                 .map(meal -> {
                     Recipe recipe = meal.getRecipe();
@@ -82,8 +88,10 @@ public class MealService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
-        Recipe recipe = requestDto.getRecipeId() != null ? recipeRepository.findById(requestDto.getRecipeId())
-                .orElseThrow(() -> new RuntimeException("레시피를 찾을 수 없습니다.")) : null;
+        WeeklyMeal weeklyMeal = mealRepository.findById(requestDto.getMealId())
+                .orElseThrow(() -> new RuntimeException("식단을 찾을 수 없습니다."));
+
+        Recipe recipe = weeklyMeal.getRecipe();
 
         RealEat realEat = RealEat.builder()
                 .user(user)
@@ -91,6 +99,8 @@ public class MealService {
                 .mealDate(requestDto.getMealDate())
                 .customFoodCalories(requestDto.getCustomFoodCalories() == 0 ? recipe.getCalories() : requestDto.getCustomFoodCalories())
                 .customFoodName(requestDto.getCustomFoodName() == null ? recipe.getName() : requestDto.getCustomFoodName())
+                .mealType(requestDto.getMealType())
+                .weeklyMeal(weeklyMeal)
                 .build();
 
         realEatRepository.save(realEat);

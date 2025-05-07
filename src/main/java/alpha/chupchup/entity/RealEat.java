@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -41,7 +42,7 @@ public class RealEat {
     @Column(length = 255)
     private String customFoodName;
 
-    private LocalDateTime mealDate;
+    private LocalDate mealDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

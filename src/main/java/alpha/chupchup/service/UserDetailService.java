@@ -29,7 +29,6 @@ public class UserDetailService {
         if (userDetailRepository.findByUser(user).isPresent()) {
             throw new IllegalStateException("이미 식단 정보가 등록되어 있습니다.");
         }
-        validateMealCount(dto.getMealCount());
 
         UserDetail detail = new UserDetail();
         detail.setUser(user);
@@ -84,8 +83,6 @@ public class UserDetailService {
         UserDetail detail = userDetailRepository.findByUser(user)
                 .orElseThrow(() -> new IllegalStateException("식단 정보가 없습니다."));
 
-        validateMealCount(dto.getMealCount());
-
         detail.setAge(dto.getAge());
         detail.setGender(dto.getGender());
         detail.setHeight(dto.getHeight());
@@ -97,16 +94,6 @@ public class UserDetailService {
             detail.setUserDietInfo(objectMapper.writeValueAsString(dto.getUserDietInfo()));
         } catch (Exception e) {
             throw new RuntimeException("직렬화 실패", e);
-        }
-    }
-
-    // mealCount 형식 유효성 검사
-    private void validateMealCount(List<String> mealCounts) {
-        List<String> allowed = List.of("아침", "점심", "저녁");
-        for (String meal : mealCounts) {
-            if (!allowed.contains(meal)) {
-                throw new IllegalArgumentException("유효하지 않은 식사 시간: " + meal);
-            }
         }
     }
 }

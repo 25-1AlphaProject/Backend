@@ -1,6 +1,7 @@
 package alpha.chupchup.dto.user;
 
 import alpha.chupchup.entity.enums.Gender;
+import alpha.chupchup.entity.enums.MealCount;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +14,7 @@ public class DietInfoRequestDto {
     private double height;
     private double weight;
     private Gender gender;
-    private List<String> mealCount;
+    private List<MealCount> mealCount;
     private int targetCalories;
     private UserDietInfoDto userDietInfo;
 }

@@ -3,18 +3,18 @@ package alpha.chupchup.controller;
 import alpha.chupchup.dto.*;
 import alpha.chupchup.entity.User;
 import alpha.chupchup.security.CustomUserDetails;
-import alpha.chupchup.dto.CookeryResponseDto;
 import alpha.chupchup.service.MealService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -26,23 +26,44 @@ public class MealController {
     private final MealService mealService;
 
     @GetMapping("/{date}")
-    @Operation(summary = "해당 날짜 식단 조회", description = "해당 날짜의 식단을 조회합니다.")
+    @Operation(summary = "해당 날짜의 생성된 식단 조회", description = "해당 날짜의 생성된 식단을 조회합니다.")
     public ResponseEntity<ResponseDto<?>> getMealsByDate(
             @Parameter(
                     description = "조회할 날짜",
                     required = true
             )
-            @PathVariable("date") LocalDateTime dateTime,
+            @PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         try {
             Long userId = userDetails.getUser().getId();
-            List<MealDto> meals = mealService.getOneDayMealByDate(userId, dateTime);
+            List<MealDto> meals = mealService.getOneDayMealsByDate(userId, date);
             return ResponseEntity.ok(ResponseDto.success(meals));
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ResponseDto.error("식단 조회에 실패했습니다."));
+        }
+    }
+
+    @GetMapping("/real-eat/{date}")
+    @Operation(summary = "해당 날짜 실제로 먹은 식단 조회", description = "해당 날짜의 실제로 먹은 식단을 조회합니다.")
+    public ResponseEntity<ResponseDto<?>> getRealEatsByDate(
+            @Parameter(
+                    description = "조회할 날짜",
+                    required = true
+            )
+            @PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        try {
+            Long userId = userDetails.getUser().getId();
+            List<MealDto> meals = mealService.getOneDayRealEatsByDate(userId, date);
+            return ResponseEntity.ok(ResponseDto.success(meals));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseDto.error("실제로 먹은 식단 조회에 실패했습니다."));
         }
     }
 

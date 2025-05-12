@@ -1,11 +1,12 @@
 package alpha.chupchup.dto;
 
 import alpha.chupchup.entity.enums.Gender;
-import alpha.chupchup.entity.enums.MealCount;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -16,7 +17,7 @@ public class FastApiMealRequestDto {
     private Gender gender;
     private Integer age;
     private Double weight;
-    private MealCount meal_count;
+    private List<String> meal_count;
     private Integer target_calories;
     private String user_diet_info;
 }

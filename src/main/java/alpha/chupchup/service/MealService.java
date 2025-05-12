@@ -3,6 +3,9 @@ package alpha.chupchup.service;
 import alpha.chupchup.dto.*;
 import alpha.chupchup.entity.*;
 import alpha.chupchup.repository.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -28,6 +31,7 @@ public class MealService {
     private final RecipeRepository recipeRepository;
     private final RestTemplate restTemplate;
     private final UserDetailRepository userDetailRepository;
+    private final ObjectMapper objectMapper;
     @Value("{fast-api.url}")
     private String fastApiUrl;
 
@@ -140,16 +144,18 @@ public class MealService {
         }
     }
 
-    public List<MealDto> generateWeeklyMeal(User user) {
+    public List<MealDto> generateWeeklyMeal(User user) throws JsonProcessingException {
         UserDetail userDetail = userDetailRepository.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("해당 유저 아이디의 유저디테일을 가져올 수 없습니다."));
+
+        List<String> mealCount = objectMapper.readValue(userDetail.getMealCount(), new TypeReference<>() {});
 
         FastApiMealRequestDto fastApiRequest = FastApiMealRequestDto.builder()
                 .user_id(user.getId())
                 .gender(userDetail.getGender())
                 .age(userDetail.getAge())
                 .weight(userDetail.getWeight())
-//                .meal_count(userDetail.getMealCount())
+                .meal_count(mealCount)
                 .target_calories(userDetail.getTargetCalories())
                 .user_diet_info(userDetail.getUserDietInfo())
                 .build();

@@ -1,5 +1,9 @@
 package alpha.chupchup.entity;
 
+import alpha.chupchup.entity.community.CommunityComment;
+import alpha.chupchup.entity.community.CommunityLike;
+import alpha.chupchup.entity.community.CommunityPost;
+import alpha.chupchup.entity.community.CommunityScrap;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,7 +35,7 @@ public class User {
     @Column(nullable = false, unique = true, length = 50)
     private String nickname;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = true, length = 20)
     private String phoneNumber;
 
     @Column(length = 255)

@@ -11,16 +11,17 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RealEatPostRequestDto {
 
-    @Schema(description = "식단 아이디")
-    private Long mealId;
+public class RealEatCustomRequestDto {
+
+    @Schema(description = "사진")
+    private String mealPhoto;
 
     @Schema(description = "먹은 날짜")
     private LocalDate mealDate;
 
-    @Schema(description = "음식 칼로리")
-    private float foodCalories;
+    @Schema(description = "몇 인분")
+    private float amount;
 
     @Schema(description = "타입[BREAKFAST, LUNCH, DINNER, SNACK]")
     private MealType mealType;

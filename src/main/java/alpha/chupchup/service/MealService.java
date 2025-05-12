@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -122,14 +123,58 @@ public class MealService {
         RealEat realEat = RealEat.builder()
                 .user(user)
                 .recipe(recipe)
-                .mealDate(requestDto.getMealDate())
-                .customFoodCalories(requestDto.getCustomFoodCalories() == 0 ? recipe.getCalories() : requestDto.getCustomFoodCalories())
-                .customFoodName(requestDto.getCustomFoodName() == null ? recipe.getName() : requestDto.getCustomFoodName())
-                .mealType(requestDto.getMealType())
                 .weeklyMeal(weeklyMeal)
+                .mealDate(requestDto.getMealDate())
+                .customFoodCalories(requestDto.getFoodCalories())
+                .mealPhoto(recipe.getFoodImage())
+                .mealType(requestDto.getMealType())
                 .build();
 
         realEatRepository.save(realEat);
+    }
+
+    @Transactional
+    public CustomRealEatResponseDto postCustomRealEat(RealEatCustomRequestDto requestDto, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        FastApiCustomMealRequestDto request = FastApiCustomMealRequestDto.builder()
+                .mealPhoto(requestDto.getMealPhoto())
+                .amount(requestDto.getAmount())
+                .build();
+
+        ResponseEntity<FastApiCustomMealResponseDto> response = sendMealToFastApi(request);
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            FastApiCustomMealResponseDto responseDto = response.getBody();
+
+            String mealName = responseDto.getMealName();
+            float foodCalories = responseDto.getFoodCalories();
+
+            RealEat realEat = RealEat.builder()
+                    .user(user)
+                    .mealPhoto(requestDto.getMealPhoto())
+                    .customFoodCalories(foodCalories)
+                    .customFoodName(mealName)
+                    .mealDate(requestDto.getMealDate())
+                    .mealType(requestDto.getMealType())
+                    .build();
+
+            realEatRepository.save(realEat);
+        } else {
+            throw new RuntimeException("FastApi 식단 요청 실패");
+        }
+        return CustomRealEatResponseDto.builder()
+                .mealName(response.getBody().getMealName())
+                .foodCalories(response.getBody().getFoodCalories())
+                .build();
+    }
+
+    public ResponseEntity<FastApiCustomMealResponseDto> sendMealToFastApi(FastApiCustomMealRequestDto request) {
+        HttpEntity<FastApiCustomMealRequestDto> entity = new HttpEntity<>(request);
+        return restTemplate.exchange(
+                fastApiUrl, HttpMethod.POST, entity, FastApiCustomMealResponseDto.class
+        );
     }
 
     @Transactional

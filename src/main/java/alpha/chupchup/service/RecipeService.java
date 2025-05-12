@@ -1,9 +1,9 @@
 package alpha.chupchup.service;
 
 import alpha.chupchup.dto.recipe.RecipeResponseDto;
-import alpha.chupchup.entity.Recipe;
+import alpha.chupchup.entity.recipe.Recipe;
 import alpha.chupchup.entity.User;
-import alpha.chupchup.entity.UserRecipeFavorite;
+import alpha.chupchup.entity.recipe.UserRecipeFavorite;
 import alpha.chupchup.repository.RecipeRepository;
 import alpha.chupchup.repository.UserRecipeFavoriteRepository;
 import alpha.chupchup.repository.UserRepository;

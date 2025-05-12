@@ -1,6 +1,6 @@
 package alpha.chupchup.repository;
 
-import alpha.chupchup.entity.WeeklyMeal;
+import alpha.chupchup.entity.recipe.WeeklyMeal;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;

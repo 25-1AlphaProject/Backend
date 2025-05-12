@@ -1,4 +1,4 @@
-package alpha.chupchup.dto;
+package alpha.chupchup.dto.meal;
 
 import alpha.chupchup.entity.enums.MealType;
 import io.swagger.v3.oas.annotations.media.Schema;

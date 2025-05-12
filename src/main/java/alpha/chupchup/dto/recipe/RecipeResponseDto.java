@@ -1,4 +1,4 @@
-package alpha.chupchup.dto;
+package alpha.chupchup.dto.recipe;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

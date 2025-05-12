@@ -1,4 +1,4 @@
-package alpha.chupchup.dto;
+package alpha.chupchup.dto.fastapi;
 
 import alpha.chupchup.entity.enums.Gender;
 import lombok.AllArgsConstructor;

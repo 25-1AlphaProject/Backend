@@ -1,6 +1,8 @@
 package alpha.chupchup.service;
 
-import alpha.chupchup.dto.*;
+import alpha.chupchup.dto.fastapi.*;
+import alpha.chupchup.dto.meal.*;
+import alpha.chupchup.dto.recipe.CookeryResponseDto;
 import alpha.chupchup.entity.*;
 import alpha.chupchup.repository.*;
 import com.fasterxml.jackson.core.JsonProcessingException;

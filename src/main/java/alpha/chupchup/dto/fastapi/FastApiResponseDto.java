@@ -1,14 +1,12 @@
-package alpha.chupchup.dto;
+package alpha.chupchup.dto.fastapi;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CookeryResponseDto {
-    List<String> recipeTexts;
+public class FastApiResponseDto {
+    private boolean success;
 }

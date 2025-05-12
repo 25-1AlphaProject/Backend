@@ -1,15 +1,13 @@
-package alpha.chupchup.dto;
+package alpha.chupchup.dto.fastapi;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomRealEatResponseDto {
+public class FastApiCustomMealResponseDto {
     private String mealName;
     private float foodCalories;
 }

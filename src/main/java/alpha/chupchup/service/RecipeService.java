@@ -1,6 +1,6 @@
 package alpha.chupchup.service;
 
-import alpha.chupchup.dto.RecipeResponseDto;
+import alpha.chupchup.dto.recipe.RecipeResponseDto;
 import alpha.chupchup.entity.Recipe;
 import alpha.chupchup.entity.User;
 import alpha.chupchup.entity.UserRecipeFavorite;

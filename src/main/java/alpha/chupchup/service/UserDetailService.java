@@ -38,6 +38,7 @@ public class UserDetailService {
         detail.setHeight(dto.getHeight());
         detail.setWeight(dto.getWeight());
         detail.setTargetCalories(dto.getTargetCalories());
+        detail.setHealthGoal(dto.getHealthGoal());
 
         try {
             detail.setMealCount(objectMapper.writeValueAsString(dto.getMealCount()));
@@ -72,7 +73,8 @@ public class UserDetailService {
                 detail.getGender(),
                 mealCount,
                 detail.getTargetCalories(),
-                dietInfo
+                dietInfo,
+                detail.getHealthGoal()
         );
     }
 
@@ -90,6 +92,7 @@ public class UserDetailService {
         detail.setHeight(dto.getHeight());
         detail.setWeight(dto.getWeight());
         detail.setTargetCalories(dto.getTargetCalories());
+        detail.setHealthGoal(dto.getHealthGoal());
 
         try {
             detail.setMealCount(objectMapper.writeValueAsString(dto.getMealCount()));

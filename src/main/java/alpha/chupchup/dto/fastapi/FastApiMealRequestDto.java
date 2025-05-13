@@ -1,6 +1,7 @@
 package alpha.chupchup.dto.fastapi;
 
 import alpha.chupchup.entity.enums.Gender;
+import alpha.chupchup.entity.enums.HealthGoal;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
@@ -24,4 +25,5 @@ public class FastApiMealRequestDto {
     private List<String> mealCount;
     private Integer targetCalories;
     private String userDietInfo;
+    private HealthGoal healthGoal;
 }

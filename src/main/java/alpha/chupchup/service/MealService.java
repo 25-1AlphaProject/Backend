@@ -34,7 +34,6 @@ public class MealService {
     private final MealRepository mealRepository;
     private final RealEatRepository realEatRepository;
     private final UserRepository userRepository;
-    private final RecipeRepository recipeRepository;
     private final RestTemplate restTemplate;
     private final UserDetailRepository userDetailRepository;
     private final ObjectMapper objectMapper;
@@ -175,6 +174,22 @@ public class MealService {
                 .build();
     }
 
+    @Transactional
+    public void postWriteRealEat(RealEatWriteRequestDto requestDto, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        RealEat realEat = RealEat.builder()
+                .user(user)
+                .mealDate(requestDto.getMealDate())
+                .customFoodCalories(requestDto.getFoodCalories())
+                .mealType(requestDto.getMealType())
+                .mealPhoto(requestDto.getMealPhoto())
+                .build();
+
+        realEatRepository.save(realEat);
+    }
+
     public ResponseEntity<FastApiCustomMealResponseDto> sendMealToFastApi(FastApiCustomMealRequestDto request) {
         String requestUrl = fastApiUrl + "/vision/recognize";
 
@@ -211,7 +226,10 @@ public class MealService {
                 .mealCount(mealCount)
                 .targetCalories(userDetail.getTargetCalories())
                 .userDietInfo(userDetail.getUserDietInfo())
+                .healthGoal(userDetail.getHealthGoal())
                 .build();
+
+        System.out.println(fastApiRequest);
 
         String requestUrl = fastApiUrl + "/meal/weekly";
 
@@ -249,7 +267,7 @@ public class MealService {
     }
 
     public List<IngredientLinksResponseDto> getIngredientLinks(Long recipeId) {
-        String requestUrl = fastApiUrl + "/ingredient-links/{recipeId}";
+        String requestUrl = fastApiUrl + "/ingredient/ingredient-links/{recipeId}";
 
         ResponseEntity<IngredientLinksResponseDto[]> responseEntity =
                 restTemplate.getForEntity(

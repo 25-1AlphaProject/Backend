@@ -155,6 +155,22 @@ public class MealController {
         }
     }
 
+    @PostMapping("/real-eat/write")
+    @Operation(summary = "실제 먹은 식단 추가하기[수기로 추가하는 경우]", description = "수기로 등록한 식단을 추가합니다.")
+    public ResponseEntity<ResponseDto<String>> postRealEatWrite(
+            @RequestBody RealEatWriteRequestDto requestDto,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        try {
+            Long userId = userDetails.getUser().getId();
+            mealService.postWriteRealEat(requestDto, userId);
+            return ResponseEntity.ok(ResponseDto.success("식단이 정상적으로 등록되었습니다."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseDto.error("식단 등록에 실패했습니다."));
+        }
+    }
+
     @DeleteMapping("/{realEatId}")
     @Operation(summary = "실제 먹은 식단 제거하기", description = "실제로 먹은 식단을 제거합니다.")
     public ResponseEntity<ResponseDto<String>> deleteRealEat(
@@ -202,6 +218,7 @@ public class MealController {
         try {
             return ResponseEntity.ok(ResponseDto.success(mealService.getIngredientLinks(recipeId)));
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ResponseDto.error("재료 링크 조회에 실패했습니다."));
         }

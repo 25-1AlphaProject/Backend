@@ -1,10 +1,34 @@
-# Mac OS 파일
+# MacOS 시스템 파일
 .DS_Store
 
-
-# 빌드/캐시 파일
-/build/
+# Gradle
 .gradle/
+build/
+out/
+
+# IntelliJ IDEA
 .idea/
 .idea/*
 .idea/*/
+
+src/main/resources/application.yaml
+
+*.iml
+*.ipr
+*.iws
+
+# 설정 파일 (로컬 환경/보안)
+src/main/resources/application.properties
+
+# 로그 파일
+*.log
+
+# 테스트/임시 파일
+*.tmp
+*.bak
+
+# 컴파일된 클래스 파일
+*.class
+
+# 기타 IDE 캐시
+.vscode/

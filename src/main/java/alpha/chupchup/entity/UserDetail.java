@@ -1,7 +1,7 @@
 package alpha.chupchup.entity;
 
 import alpha.chupchup.entity.enums.Gender;
-import alpha.chupchup.entity.enums.MealCount;
+import alpha.chupchup.entity.enums.HealthGoal;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -25,21 +25,24 @@ public class UserDetail {
     @Column(nullable = false)
     private int age;
 
-    @Column(nullable = false, precision = 5, scale = 2)
+    @Column(nullable = false)
     private double height;
 
-    @Column(nullable = false, precision = 5, scale = 2)
+    @Column(nullable = false)
     private double weight;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private MealCount mealCount;
+    @Column(columnDefinition = "JSON", nullable = false)
+    private String mealCount;
 
     @Column(nullable = false)
     private int targetCalories;
 
     @Column(columnDefinition = "JSON", nullable = false)
-    private String userDietInfo; // JSON 문자열 저장
+    private String userDietInfo;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private HealthGoal healthGoal;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

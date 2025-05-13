@@ -1,9 +1,20 @@
 package alpha.chupchup.entity;
 
+import alpha.chupchup.entity.community.CommunityComment;
+import alpha.chupchup.entity.community.CommunityLike;
+import alpha.chupchup.entity.community.CommunityPost;
+import alpha.chupchup.entity.community.CommunityScrap;
+import alpha.chupchup.entity.recipe.RealEat;
+import alpha.chupchup.entity.recipe.UserRecipeFavorite;
+import alpha.chupchup.entity.recipe.WeeklyMeal;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,7 +38,7 @@ public class User {
     @Column(nullable = false, unique = true, length = 50)
     private String nickname;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = true, length = 20)
     private String phoneNumber;
 
     @Column(length = 255)
@@ -56,4 +67,13 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private UserDetail userDetail;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<WeeklyMeal> weeklyMeals = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<RealEat> realEats = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<UserRecipeFavorite> favorites = new ArrayList<>();
 }

@@ -251,28 +251,18 @@ public class MealService {
     public List<IngredientLinksResponseDto> getIngredientLinks(Long recipeId) {
         String requestUrl = fastApiUrl + "/ingredient-links/{recipeId}";
 
-        HttpEntity<IngredientLinksRequestDto> body = new HttpEntity<>(getIngredientLinksRequest(recipeId));
-
         ResponseEntity<IngredientLinksResponseDto[]> responseEntity =
-                restTemplate.postForEntity(requestUrl, body, IngredientLinksResponseDto[].class, recipeId);
+                restTemplate.getForEntity(
+                        requestUrl,
+                        IngredientLinksResponseDto[].class,
+                        recipeId
+                );
 
         if(responseEntity.getStatusCode() == HttpStatus.OK && responseEntity.getBody() != null) {
             return Arrays.asList(responseEntity.getBody());
         } else {
             throw new RuntimeException("재료 링크 조회에 실패했습니다.");
         }
-    }
-
-    public IngredientLinksRequestDto getIngredientLinksRequest(Long recipeId) {
-        Recipe recipe = recipeRepository.findById(recipeId)
-                .orElseThrow(() -> new RuntimeException("레시피를 찾을 수 없습니다."));
-
-        List<String> ingredients = Arrays.stream(recipe.getIngredient().split(","))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .toList();
-
-        return new IngredientLinksRequestDto(ingredients);
     }
 
     List<String> getRecipeTexts(Recipe recipe) {

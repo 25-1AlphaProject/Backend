@@ -1,7 +1,7 @@
 package alpha.chupchup.controller;
 
-import alpha.chupchup.dto.RecipeResponseDto;
-import alpha.chupchup.dto.RecipeSearchRequestDto;
+import alpha.chupchup.dto.recipe.RecipeResponseDto;
+import alpha.chupchup.dto.recipe.RecipeSearchRequestDto;
 import alpha.chupchup.dto.ResponseDto;
 import alpha.chupchup.security.CustomUserDetails;
 import alpha.chupchup.service.RecipeService;

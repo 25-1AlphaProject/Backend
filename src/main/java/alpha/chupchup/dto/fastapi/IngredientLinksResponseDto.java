@@ -1,4 +1,4 @@
-package alpha.chupchup.dto;
+package alpha.chupchup.dto.fastapi;
 
 import lombok.Data;
 

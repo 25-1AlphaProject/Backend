@@ -1,11 +1,20 @@
 package alpha.chupchup.service;
 
-import alpha.chupchup.dto.*;
+import alpha.chupchup.dto.fastapi.*;
+import alpha.chupchup.dto.meal.*;
+import alpha.chupchup.dto.recipe.CookeryResponseDto;
 import alpha.chupchup.entity.*;
+import alpha.chupchup.entity.recipe.RealEat;
+import alpha.chupchup.entity.recipe.Recipe;
+import alpha.chupchup.entity.recipe.WeeklyMeal;
 import alpha.chupchup.repository.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,7 +37,8 @@ public class MealService {
     private final RecipeRepository recipeRepository;
     private final RestTemplate restTemplate;
     private final UserDetailRepository userDetailRepository;
-    @Value("{fast-api.url}")
+    private final ObjectMapper objectMapper;
+    @Value("${fast-api.url}")
     private String fastApiUrl;
 
     public List<MealDto> getOneDayMealsByDate(Long userId, LocalDate date) {
@@ -118,14 +128,60 @@ public class MealService {
         RealEat realEat = RealEat.builder()
                 .user(user)
                 .recipe(recipe)
-                .mealDate(requestDto.getMealDate())
-                .customFoodCalories(requestDto.getCustomFoodCalories() == 0 ? recipe.getCalories() : requestDto.getCustomFoodCalories())
-                .customFoodName(requestDto.getCustomFoodName() == null ? recipe.getName() : requestDto.getCustomFoodName())
-                .mealType(requestDto.getMealType())
                 .weeklyMeal(weeklyMeal)
+                .mealDate(requestDto.getMealDate())
+                .customFoodCalories(requestDto.getFoodCalories())
+                .mealPhoto(recipe.getFoodImage())
+                .mealType(requestDto.getMealType())
                 .build();
 
         realEatRepository.save(realEat);
+    }
+
+    @Transactional
+    public CustomRealEatResponseDto postCustomRealEat(RealEatCustomRequestDto requestDto, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        FastApiCustomMealRequestDto request = FastApiCustomMealRequestDto.builder()
+                .mealPhoto(requestDto.getMealPhoto())
+                .amount(requestDto.getAmount())
+                .build();
+
+        ResponseEntity<FastApiCustomMealResponseDto> response = sendMealToFastApi(request);
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            FastApiCustomMealResponseDto responseDto = response.getBody();
+
+            String mealName = responseDto.getMealName();
+            float foodCalories = responseDto.getFoodCalories();
+
+            RealEat realEat = RealEat.builder()
+                    .user(user)
+                    .mealPhoto(requestDto.getMealPhoto())
+                    .customFoodCalories(foodCalories)
+                    .customFoodName(mealName)
+                    .mealDate(requestDto.getMealDate())
+                    .mealType(requestDto.getMealType())
+                    .build();
+
+            realEatRepository.save(realEat);
+        } else {
+            throw new RuntimeException("FastApi 식단 요청 실패");
+        }
+        return CustomRealEatResponseDto.builder()
+                .mealName(response.getBody().getMealName())
+                .foodCalories(response.getBody().getFoodCalories())
+                .build();
+    }
+
+    public ResponseEntity<FastApiCustomMealResponseDto> sendMealToFastApi(FastApiCustomMealRequestDto request) {
+        String requestUrl = fastApiUrl + "/vision/recognize";
+
+        HttpEntity<FastApiCustomMealRequestDto> entity = new HttpEntity<>(request);
+        return restTemplate.exchange(
+                requestUrl, HttpMethod.POST, entity, FastApiCustomMealResponseDto.class
+        );
     }
 
     @Transactional
@@ -140,22 +196,27 @@ public class MealService {
         }
     }
 
-    public List<MealDto> generateWeeklyMeal(User user) {
+    public List<MealDto> generateWeeklyMeal(User user) throws JsonProcessingException {
         UserDetail userDetail = userDetailRepository.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("해당 유저 아이디의 유저디테일을 가져올 수 없습니다."));
 
+        List<String> mealCount = objectMapper.readValue(userDetail.getMealCount(), new TypeReference<>() {});
+
         FastApiMealRequestDto fastApiRequest = FastApiMealRequestDto.builder()
-                .user_id(user.getId())
+                .userId(user.getId())
                 .gender(userDetail.getGender())
                 .age(userDetail.getAge())
                 .weight(userDetail.getWeight())
-//                .meal_count(userDetail.getMealCount())
-                .target_calories(userDetail.getTargetCalories())
-                .user_diet_info(userDetail.getUserDietInfo())
+                .height(userDetail.getHeight())
+                .mealCount(mealCount)
+                .targetCalories(userDetail.getTargetCalories())
+                .userDietInfo(userDetail.getUserDietInfo())
                 .build();
 
+        String requestUrl = fastApiUrl + "/meal/weekly";
+
         HttpEntity<FastApiMealRequestDto> entity = new HttpEntity<>(fastApiRequest);
-        ResponseEntity<FastApiResponseDto> response = restTemplate.postForEntity(fastApiUrl, entity, FastApiResponseDto.class);
+        ResponseEntity<FastApiResponseDto> response = restTemplate.postForEntity(requestUrl, entity, FastApiResponseDto.class);
 
         if (response.getStatusCode() == HttpStatus.OK && response.getBody().isSuccess()) {
             LocalDate startDate = LocalDate.now();
@@ -188,30 +249,20 @@ public class MealService {
     }
 
     public List<IngredientLinksResponseDto> getIngredientLinks(Long recipeId) {
-        String requestUrl = fastApiUrl + "/ingredient-links?recipeId=" + recipeId;
-
-        HttpEntity<IngredientLinksRequestDto> body = new HttpEntity<>(getIngredientLinksRequest(recipeId));
+        String requestUrl = fastApiUrl + "/ingredient-links/{recipeId}";
 
         ResponseEntity<IngredientLinksResponseDto[]> responseEntity =
-                restTemplate.postForEntity(requestUrl, body, IngredientLinksResponseDto[].class);
+                restTemplate.getForEntity(
+                        requestUrl,
+                        IngredientLinksResponseDto[].class,
+                        recipeId
+                );
 
         if(responseEntity.getStatusCode() == HttpStatus.OK && responseEntity.getBody() != null) {
             return Arrays.asList(responseEntity.getBody());
         } else {
             throw new RuntimeException("재료 링크 조회에 실패했습니다.");
         }
-    }
-
-    public IngredientLinksRequestDto getIngredientLinksRequest(Long recipeId) {
-        Recipe recipe = recipeRepository.findById(recipeId)
-                .orElseThrow(() -> new RuntimeException("레시피를 찾을 수 없습니다."));
-
-        List<String> ingredients = Arrays.stream(recipe.getIngredient().split(","))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .toList();
-
-        return new IngredientLinksRequestDto(ingredients);
     }
 
     List<String> getRecipeTexts(Recipe recipe) {

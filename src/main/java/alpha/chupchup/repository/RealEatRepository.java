@@ -1,6 +1,6 @@
 package alpha.chupchup.repository;
 
-import alpha.chupchup.entity.RealEat;
+import alpha.chupchup.entity.recipe.RealEat;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;

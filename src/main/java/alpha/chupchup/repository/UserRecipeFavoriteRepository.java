@@ -1,6 +1,6 @@
 package alpha.chupchup.repository;
 
-import alpha.chupchup.entity.UserRecipeFavorite;
+import alpha.chupchup.entity.recipe.UserRecipeFavorite;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

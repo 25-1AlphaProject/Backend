@@ -1,5 +1,6 @@
-package alpha.chupchup.entity;
+package alpha.chupchup.entity.recipe;
 
+import alpha.chupchup.entity.User;
 import alpha.chupchup.entity.enums.MealType;
 import alpha.chupchup.entity.enums.Preference;
 import jakarta.persistence.*;

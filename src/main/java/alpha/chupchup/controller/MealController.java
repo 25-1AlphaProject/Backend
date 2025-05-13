@@ -1,6 +1,8 @@
 package alpha.chupchup.controller;
 
 import alpha.chupchup.dto.*;
+import alpha.chupchup.dto.meal.*;
+import alpha.chupchup.dto.recipe.CookeryResponseDto;
 import alpha.chupchup.entity.User;
 import alpha.chupchup.security.CustomUserDetails;
 import alpha.chupchup.service.MealService;
@@ -122,7 +124,7 @@ public class MealController {
     }
 
     @PostMapping("/real-eat")
-    @Operation(summary = "실제 먹은 식단 추가하기", description = "실제로 먹은 식단을 추가합니다.")
+    @Operation(summary = "실제 먹은 식단 추가하기[추천받은 식단을 추가하는 경우]", description = "추천받은 식단 중에서 실제로 먹은 식단을 추가합니다.")
     public ResponseEntity<ResponseDto<String>> postRealEat(
             @RequestBody RealEatPostRequestDto requestDto,
             @AuthenticationPrincipal CustomUserDetails userDetails
@@ -134,6 +136,22 @@ public class MealController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ResponseDto.error("식단 등록에 실패했습니다."));
+        }
+    }
+
+    @PostMapping("/real-eat/custom")
+    @Operation(summary = "실제 먹은 식단 추가하기[자신이 먹은 음식을 추가하는 경우]", description = "추천 받은 식단 외에 실제로 먹은 식단을 추가합니다.")
+    public ResponseEntity<ResponseDto<?>> postCustomRealEat(
+            @RequestBody RealEatCustomRequestDto requestDto,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        try {
+            Long userId = userDetails.getUser().getId();
+            CustomRealEatResponseDto response = mealService.postCustomRealEat(requestDto, userId);
+            return ResponseEntity.ok(ResponseDto.success(response));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseDto.error("커스텀 식단 등록에 실패했습니다."));
         }
     }
 
@@ -166,6 +184,7 @@ public class MealController {
             User user = userDetails.getUser();
             return ResponseEntity.ok(ResponseDto.success(mealService.generateWeeklyMeal(user)));
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ResponseDto.error("식단 생성에 실패했습니다."));
         }

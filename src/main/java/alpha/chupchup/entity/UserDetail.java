@@ -1,7 +1,7 @@
 package alpha.chupchup.entity;
 
 import alpha.chupchup.entity.enums.Gender;
-import alpha.chupchup.entity.enums.MealCount;
+import alpha.chupchup.entity.enums.HealthGoal;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -39,6 +39,10 @@ public class UserDetail {
 
     @Column(columnDefinition = "JSON", nullable = false)
     private String userDietInfo;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private HealthGoal healthGoal;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

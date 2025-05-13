@@ -38,7 +38,7 @@ public class MealService {
     private final RestTemplate restTemplate;
     private final UserDetailRepository userDetailRepository;
     private final ObjectMapper objectMapper;
-    @Value("{fast-api.url}")
+    @Value("${fast-api.url}")
     private String fastApiUrl;
 
     public List<MealDto> getOneDayMealsByDate(Long userId, LocalDate date) {
@@ -203,13 +203,14 @@ public class MealService {
         List<String> mealCount = objectMapper.readValue(userDetail.getMealCount(), new TypeReference<>() {});
 
         FastApiMealRequestDto fastApiRequest = FastApiMealRequestDto.builder()
-                .user_id(user.getId())
+                .userId(user.getId())
                 .gender(userDetail.getGender())
                 .age(userDetail.getAge())
                 .weight(userDetail.getWeight())
-                .meal_count(mealCount)
-                .target_calories(userDetail.getTargetCalories())
-                .user_diet_info(userDetail.getUserDietInfo())
+                .height(userDetail.getHeight())
+                .mealCount(mealCount)
+                .targetCalories(userDetail.getTargetCalories())
+                .userDietInfo(userDetail.getUserDietInfo())
                 .build();
 
         String requestUrl = fastApiUrl + "/meal/weekly";

@@ -1,6 +1,8 @@
 package alpha.chupchup.dto.fastapi;
 
 import alpha.chupchup.entity.enums.Gender;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,12 +14,14 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class FastApiMealRequestDto {
-    private Long user_id;
+    private Long userId;
     private Gender gender;
     private Integer age;
     private Double weight;
-    private List<String> meal_count;
-    private Integer target_calories;
-    private String user_diet_info;
+    private Double height;
+    private List<String> mealCount;
+    private Integer targetCalories;
+    private String userDietInfo;
 }

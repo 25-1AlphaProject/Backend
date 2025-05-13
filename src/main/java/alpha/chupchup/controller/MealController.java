@@ -184,6 +184,7 @@ public class MealController {
             User user = userDetails.getUser();
             return ResponseEntity.ok(ResponseDto.success(mealService.generateWeeklyMeal(user)));
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ResponseDto.error("식단 생성에 실패했습니다."));
         }

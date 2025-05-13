@@ -176,9 +176,11 @@ public class MealService {
     }
 
     public ResponseEntity<FastApiCustomMealResponseDto> sendMealToFastApi(FastApiCustomMealRequestDto request) {
+        String requestUrl = fastApiUrl + "/vision/recognize";
+
         HttpEntity<FastApiCustomMealRequestDto> entity = new HttpEntity<>(request);
         return restTemplate.exchange(
-                fastApiUrl, HttpMethod.POST, entity, FastApiCustomMealResponseDto.class
+                requestUrl, HttpMethod.POST, entity, FastApiCustomMealResponseDto.class
         );
     }
 
@@ -210,8 +212,10 @@ public class MealService {
                 .user_diet_info(userDetail.getUserDietInfo())
                 .build();
 
+        String requestUrl = fastApiUrl + "/meal/weekly";
+
         HttpEntity<FastApiMealRequestDto> entity = new HttpEntity<>(fastApiRequest);
-        ResponseEntity<FastApiResponseDto> response = restTemplate.postForEntity(fastApiUrl, entity, FastApiResponseDto.class);
+        ResponseEntity<FastApiResponseDto> response = restTemplate.postForEntity(requestUrl, entity, FastApiResponseDto.class);
 
         if (response.getStatusCode() == HttpStatus.OK && response.getBody().isSuccess()) {
             LocalDate startDate = LocalDate.now();
@@ -244,12 +248,12 @@ public class MealService {
     }
 
     public List<IngredientLinksResponseDto> getIngredientLinks(Long recipeId) {
-        String requestUrl = fastApiUrl + "/ingredient-links?recipeId=" + recipeId;
+        String requestUrl = fastApiUrl + "/ingredient-links/{recipeId}";
 
         HttpEntity<IngredientLinksRequestDto> body = new HttpEntity<>(getIngredientLinksRequest(recipeId));
 
         ResponseEntity<IngredientLinksResponseDto[]> responseEntity =
-                restTemplate.postForEntity(requestUrl, body, IngredientLinksResponseDto[].class);
+                restTemplate.postForEntity(requestUrl, body, IngredientLinksResponseDto[].class, recipeId);
 
         if(responseEntity.getStatusCode() == HttpStatus.OK && responseEntity.getBody() != null) {
             return Arrays.asList(responseEntity.getBody());

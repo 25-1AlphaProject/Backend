@@ -217,6 +217,11 @@ public class MealService {
 
         List<String> mealCount = objectMapper.readValue(userDetail.getMealCount(), new TypeReference<>() {});
 
+        FastApiUserDietInfo dietInfoDto = objectMapper.readValue(
+                userDetail.getUserDietInfo(),
+                FastApiUserDietInfo.class
+        );
+
         FastApiMealRequestDto fastApiRequest = FastApiMealRequestDto.builder()
                 .userId(user.getId())
                 .gender(userDetail.getGender())
@@ -225,7 +230,7 @@ public class MealService {
                 .height(userDetail.getHeight())
                 .mealCount(mealCount)
                 .targetCalories(userDetail.getTargetCalories())
-                .userDietInfo(userDetail.getUserDietInfo())
+                .userDietInfo(dietInfoDto)
                 .healthGoal(userDetail.getHealthGoal())
                 .build();
 

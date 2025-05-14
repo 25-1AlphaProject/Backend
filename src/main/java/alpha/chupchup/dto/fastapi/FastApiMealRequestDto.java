@@ -24,6 +24,6 @@ public class FastApiMealRequestDto {
     private Double height;
     private List<String> mealCount;
     private Integer targetCalories;
-    private String userDietInfo;
+    private FastApiUserDietInfo userDietInfo;
     private HealthGoal healthGoal;
 }

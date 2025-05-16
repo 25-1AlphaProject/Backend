@@ -28,7 +28,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
         user.setName(requestDto.getName());
         user.setNickname(requestDto.getNickname());
-        user.setPhoneNumber(requestDto.getPhoneNumber());
+        user.setEmail(requestDto.getEmail());
 
         userRepository.save(user);
 
@@ -56,7 +56,7 @@ public class UserService {
                 user.getUsername(),
                 user.getNickname(),
                 user.getName(),
-                user.getPhoneNumber(),
+                user.getEmail(),
                 user.getProfileImageUrl(),
                 user.getCreatedAt()
         );

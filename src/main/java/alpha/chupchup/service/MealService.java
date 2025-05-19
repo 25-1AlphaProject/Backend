@@ -170,7 +170,7 @@ public class MealService {
         }
         return CustomRealEatResponseDto.builder()
                 .mealName(response.getBody().getMealName())
-                .foodCalories(response.getBody().getFoodCalories())
+                .foodCalories(response.getBody().getFoodCalories() * request.getAmount())
                 .build();
     }
 

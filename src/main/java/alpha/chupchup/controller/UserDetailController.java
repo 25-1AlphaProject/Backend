@@ -1,6 +1,7 @@
 package alpha.chupchup.controller;
 
-import alpha.chupchup.dto.user.*;
+import alpha.chupchup.dto.user.request.DietInfoRequestDto;
+import alpha.chupchup.dto.user.response.UserDetailResponseDto;
 import alpha.chupchup.service.UserDetailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

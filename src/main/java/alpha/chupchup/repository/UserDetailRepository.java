@@ -1,7 +1,7 @@
 package alpha.chupchup.repository;
 
-import alpha.chupchup.entity.User;
-import alpha.chupchup.entity.UserDetail;
+import alpha.chupchup.entity.user.User;
+import alpha.chupchup.entity.user.UserDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

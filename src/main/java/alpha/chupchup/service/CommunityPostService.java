@@ -1,8 +1,13 @@
 package alpha.chupchup.service;
 
-import alpha.chupchup.dto.community.*;
+import alpha.chupchup.dto.community.request.PostCreateRequestDto;
+import alpha.chupchup.dto.community.request.PostUpdateRequestDto;
+import alpha.chupchup.dto.community.response.AuthorInfoDto;
+import alpha.chupchup.dto.community.response.CommentResponseDto;
+import alpha.chupchup.dto.community.response.PostCreateResponseDto;
+import alpha.chupchup.dto.community.response.PostDetailResponseDto;
 import alpha.chupchup.entity.community.CommunityPost;
-import alpha.chupchup.entity.User;
+import alpha.chupchup.entity.user.User;
 import alpha.chupchup.repository.CommunityPostRepository;
 import alpha.chupchup.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

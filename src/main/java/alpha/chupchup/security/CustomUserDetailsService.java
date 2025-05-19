@@ -1,6 +1,6 @@
 package alpha.chupchup.security;
 
-import alpha.chupchup.entity.User;
+import alpha.chupchup.entity.user.User;
 import alpha.chupchup.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

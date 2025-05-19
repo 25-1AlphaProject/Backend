@@ -1,4 +1,4 @@
-package alpha.chupchup.entity;
+package alpha.chupchup.entity.user;
 
 import alpha.chupchup.entity.enums.Gender;
 import alpha.chupchup.entity.enums.HealthGoal;

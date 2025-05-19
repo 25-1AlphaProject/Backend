@@ -1,4 +1,4 @@
-package alpha.chupchup.dto.community;
+package alpha.chupchup.dto.community.request;
 
 import lombok.Getter;
 

@@ -1,12 +1,12 @@
-package alpha.chupchup.dto.community;
+package alpha.chupchup.dto.user.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class PostCreateResponseDto {
+public class LoginResponseDto {
     private String status;
     private String message;
-    private Long postId;
+    private String token;
 }

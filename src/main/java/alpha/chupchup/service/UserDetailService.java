@@ -2,8 +2,10 @@
 package alpha.chupchup.service;
 
 import alpha.chupchup.dto.user.*;
-import alpha.chupchup.entity.User;
-import alpha.chupchup.entity.UserDetail;
+import alpha.chupchup.dto.user.request.DietInfoRequestDto;
+import alpha.chupchup.dto.user.response.UserDetailResponseDto;
+import alpha.chupchup.entity.user.User;
+import alpha.chupchup.entity.user.UserDetail;
 import alpha.chupchup.repository.UserDetailRepository;
 import alpha.chupchup.repository.UserRepository;
 import com.fasterxml.jackson.core.type.TypeReference;

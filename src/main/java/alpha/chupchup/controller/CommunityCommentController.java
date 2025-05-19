@@ -1,8 +1,8 @@
 package alpha.chupchup.controller;
 
-import alpha.chupchup.dto.community.CommentCreateRequestDto;
-import alpha.chupchup.dto.community.CommentResponseDto;
-import alpha.chupchup.dto.community.CommentUpdateRequestDto;
+import alpha.chupchup.dto.community.request.CommentCreateRequestDto;
+import alpha.chupchup.dto.community.response.CommentResponseDto;
+import alpha.chupchup.dto.community.request.CommentUpdateRequestDto;
 import alpha.chupchup.service.CommunityCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

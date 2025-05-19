@@ -1,6 +1,9 @@
 package alpha.chupchup.controller;
 
-import alpha.chupchup.dto.community.*;
+import alpha.chupchup.dto.community.request.PostCreateRequestDto;
+import alpha.chupchup.dto.community.request.PostUpdateRequestDto;
+import alpha.chupchup.dto.community.response.PostCreateResponseDto;
+import alpha.chupchup.dto.community.response.PostDetailResponseDto;
 import alpha.chupchup.service.CommunityPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

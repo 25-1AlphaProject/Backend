@@ -1,4 +1,4 @@
-package alpha.chupchup.entity;
+package alpha.chupchup.entity.user;
 
 import alpha.chupchup.entity.community.CommunityComment;
 import alpha.chupchup.entity.community.CommunityLike;

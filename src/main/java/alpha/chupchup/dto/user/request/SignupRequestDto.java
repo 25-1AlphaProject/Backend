@@ -1,4 +1,4 @@
-package alpha.chupchup.dto.user;
+package alpha.chupchup.dto.user.request;
 
 import lombok.Getter;
 import lombok.Setter;

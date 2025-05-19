@@ -1,4 +1,4 @@
-package alpha.chupchup.dto.community;
+package alpha.chupchup.dto.community.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package alpha.chupchup.security;
 
-import alpha.chupchup.entity.User;
+import alpha.chupchup.entity.user.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,4 +1,4 @@
-package alpha.chupchup.dto.user;
+package alpha.chupchup.dto.user.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

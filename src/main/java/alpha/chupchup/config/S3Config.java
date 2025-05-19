@@ -1,4 +1,4 @@
-package alpha.chupchup.common;
+package alpha.chupchup.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

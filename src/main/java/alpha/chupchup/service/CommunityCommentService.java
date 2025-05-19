@@ -1,12 +1,12 @@
 package alpha.chupchup.service;
 
-import alpha.chupchup.dto.community.AuthorInfoDto;
-import alpha.chupchup.dto.community.CommentCreateRequestDto;
-import alpha.chupchup.dto.community.CommentResponseDto;
-import alpha.chupchup.dto.community.CommentUpdateRequestDto;
-import alpha.chupchup.entity.*;
+import alpha.chupchup.dto.community.response.AuthorInfoDto;
+import alpha.chupchup.dto.community.request.CommentCreateRequestDto;
+import alpha.chupchup.dto.community.response.CommentResponseDto;
+import alpha.chupchup.dto.community.request.CommentUpdateRequestDto;
 import alpha.chupchup.entity.community.CommunityComment;
 import alpha.chupchup.entity.community.CommunityPost;
+import alpha.chupchup.entity.user.User;
 import alpha.chupchup.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;

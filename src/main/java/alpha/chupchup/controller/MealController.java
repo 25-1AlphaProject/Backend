@@ -3,7 +3,7 @@ package alpha.chupchup.controller;
 import alpha.chupchup.dto.*;
 import alpha.chupchup.dto.meal.*;
 import alpha.chupchup.dto.recipe.CookeryResponseDto;
-import alpha.chupchup.entity.User;
+import alpha.chupchup.entity.user.User;
 import alpha.chupchup.security.CustomUserDetails;
 import alpha.chupchup.service.MealService;
 import io.swagger.v3.oas.annotations.Operation;

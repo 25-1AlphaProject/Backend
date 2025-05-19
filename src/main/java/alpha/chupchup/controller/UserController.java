@@ -1,6 +1,11 @@
 package alpha.chupchup.controller;
 
-import alpha.chupchup.dto.user.*;
+import alpha.chupchup.dto.user.request.LoginRequestDto;
+import alpha.chupchup.dto.user.request.SignupRequestDto;
+import alpha.chupchup.dto.user.request.UserInfoUpdateRequestDto;
+import alpha.chupchup.dto.user.response.LoginResponseDto;
+import alpha.chupchup.dto.user.response.UserInfoResponseDto;
+import alpha.chupchup.dto.user.response.UserResponseDto;
 import alpha.chupchup.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

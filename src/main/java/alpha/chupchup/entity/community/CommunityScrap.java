@@ -1,6 +1,6 @@
 package alpha.chupchup.entity.community;
 
-import alpha.chupchup.entity.User;
+import alpha.chupchup.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 

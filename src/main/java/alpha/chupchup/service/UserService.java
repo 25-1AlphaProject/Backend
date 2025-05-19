@@ -1,7 +1,12 @@
 package alpha.chupchup.service;
 
-import alpha.chupchup.dto.user.*;
-import alpha.chupchup.entity.User;
+import alpha.chupchup.dto.user.request.LoginRequestDto;
+import alpha.chupchup.dto.user.request.SignupRequestDto;
+import alpha.chupchup.dto.user.request.UserInfoUpdateRequestDto;
+import alpha.chupchup.dto.user.response.LoginResponseDto;
+import alpha.chupchup.dto.user.response.UserInfoResponseDto;
+import alpha.chupchup.dto.user.response.UserResponseDto;
+import alpha.chupchup.entity.user.User;
 import alpha.chupchup.repository.UserRepository;
 import alpha.chupchup.security.JwtUtil;
 import lombok.RequiredArgsConstructor;

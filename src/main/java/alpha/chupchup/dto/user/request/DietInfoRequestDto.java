@@ -1,5 +1,6 @@
-package alpha.chupchup.dto.user;
+package alpha.chupchup.dto.user.request;
 
+import alpha.chupchup.dto.user.UserDietInfoDto;
 import alpha.chupchup.entity.enums.Gender;
 import alpha.chupchup.entity.enums.HealthGoal;
 import alpha.chupchup.entity.enums.MealCount;

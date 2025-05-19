@@ -9,4 +9,5 @@ public class UserResponseDto {
     private String status;
     private String message;
     private Long userId;
+    private String token;
 }

@@ -20,7 +20,7 @@ public class UserService {
 
     public UserResponseDto signup(SignupRequestDto requestDto) {
         if (userRepository.existsByUsername(requestDto.getUsername())) {
-            return new UserResponseDto("error", "중복된 아이디입니다.", null);
+            return new UserResponseDto("error", "중복된 아이디입니다.", null, null);
         }
 
         User user = new User();
@@ -32,7 +32,9 @@ public class UserService {
 
         userRepository.save(user);
 
-        return new UserResponseDto("success", "회원가입 완료", user.getId());
+        String token = jwtUtil.createToken(user.getUsername());
+
+        return new UserResponseDto("success", "회원가입 완료", user.getId(), token);
     }
 
     public LoginResponseDto login(LoginRequestDto requestDto) {

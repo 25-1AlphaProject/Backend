@@ -154,7 +154,7 @@ public class MealService {
             FastApiCustomMealResponseDto responseDto = response.getBody();
 
             String mealName = responseDto.getMealName();
-            float foodCalories = responseDto.getFoodCalories();
+            float foodCalories = responseDto.getFoodCalories() * request.getAmount();
 
             RealEat realEat = RealEat.builder()
                     .user(user)
@@ -171,7 +171,7 @@ public class MealService {
         }
         return CustomRealEatResponseDto.builder()
                 .mealName(response.getBody().getMealName())
-                .foodCalories(response.getBody().getFoodCalories())
+                .foodCalories(response.getBody().getFoodCalories() * request.getAmount())
                 .build();
     }
 

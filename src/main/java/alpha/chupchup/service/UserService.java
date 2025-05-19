@@ -10,10 +10,12 @@ import alpha.chupchup.entity.user.User;
 import alpha.chupchup.repository.UserRepository;
 import alpha.chupchup.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +27,8 @@ public class UserService {
 
     public UserResponseDto signup(SignupRequestDto requestDto) {
         if (userRepository.existsByUsername(requestDto.getUsername())) {
-            return new UserResponseDto("error", "중복된 아이디입니다.", null, null);
+//            return new UserResponseDto("error", "중복된 아이디입니다.", null, null);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "중복된 아이디입니다.");
         }
 
         User user = new User();

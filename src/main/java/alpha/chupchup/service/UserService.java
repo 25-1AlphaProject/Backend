@@ -27,8 +27,13 @@ public class UserService {
 
     public UserResponseDto signup(SignupRequestDto requestDto) {
         if (userRepository.existsByUsername(requestDto.getUsername())) {
-//            return new UserResponseDto("error", "중복된 아이디입니다.", null, null);
             throw new ResponseStatusException(HttpStatus.CONFLICT, "중복된 아이디입니다.");
+        }
+        if (userRepository.existsByNickname(requestDto.getNickname())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "중복된 닉네임입니다.");
+        }
+        if (userRepository.existsByEmail(requestDto.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "중복된 이메일입니다.");
         }
 
         User user = new User();

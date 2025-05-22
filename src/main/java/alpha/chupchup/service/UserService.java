@@ -3,6 +3,7 @@ package alpha.chupchup.service;
 import alpha.chupchup.dto.user.request.LoginRequestDto;
 import alpha.chupchup.dto.user.request.SignupRequestDto;
 import alpha.chupchup.dto.user.request.UserInfoUpdateRequestDto;
+import alpha.chupchup.dto.user.request.UserProfileImageUpdateRequestDto;
 import alpha.chupchup.dto.user.response.LoginResponseDto;
 import alpha.chupchup.dto.user.response.UserInfoResponseDto;
 import alpha.chupchup.dto.user.response.UserResponseDto;
@@ -95,6 +96,18 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
     }
+
+    @Transactional
+    public void updateProfileImage(UserProfileImageUpdateRequestDto dto) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
+
+        if (dto.getProfileImageUrl() != null && !dto.getProfileImageUrl().isBlank()) {
+            user.setProfileImageUrl(dto.getProfileImageUrl());
+        }
+    }
+
 
     public void deleteMyAccount() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();

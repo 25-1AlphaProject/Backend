@@ -3,6 +3,7 @@ package alpha.chupchup.controller;
 import alpha.chupchup.dto.user.request.LoginRequestDto;
 import alpha.chupchup.dto.user.request.SignupRequestDto;
 import alpha.chupchup.dto.user.request.UserInfoUpdateRequestDto;
+import alpha.chupchup.dto.user.request.UserProfileImageUpdateRequestDto;
 import alpha.chupchup.dto.user.response.LoginResponseDto;
 import alpha.chupchup.dto.user.response.UserInfoResponseDto;
 import alpha.chupchup.dto.user.response.UserResponseDto;
@@ -56,6 +57,17 @@ public class UserController {
         response.put("status", "success");
         response.put("message", "회원 정보 수정 완료");
         response.put("data", null);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "프로필 이미지 수정", description = "사용자의 프로필 이미지를 수정합니다.", security = @SecurityRequirement(name = "bearerAuth"))
+    @PutMapping("/profile-image")
+    public ResponseEntity<Map<String, Object>> updateProfileImage(@RequestBody UserProfileImageUpdateRequestDto dto) {
+        userService.updateProfileImage(dto);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("message", "프로필 이미지가 수정되었습니다.");
         return ResponseEntity.ok(response);
     }
 

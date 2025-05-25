@@ -57,4 +57,9 @@ public class CommunityPostController {
     public ResponseEntity<List<PostListItemDto>> getMyPosts() {
         return ResponseEntity.ok(postService.getMyPosts());
     }
+    @Operation(summary = "게시글 키워드 검색", description = "제목 또는 내용에 키워드가 포함된 게시글을 검색합니다.")
+    @GetMapping("/search")
+    public ResponseEntity<List<PostListItemDto>> searchPosts(@RequestParam String keyword) {
+        return ResponseEntity.ok(postService.searchPosts(keyword));
+    }
 }

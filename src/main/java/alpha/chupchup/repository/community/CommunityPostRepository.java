@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface CommunityPostRepository extends JpaRepository<CommunityPost, Long> {
     List<CommunityPost> findAllByUser(User user);
+    List<CommunityPost> findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(String title, String content);
 }

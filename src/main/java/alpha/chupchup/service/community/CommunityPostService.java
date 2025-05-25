@@ -170,4 +170,18 @@ public class CommunityPostService {
                         post.getCreatedAt()
                 )).toList();
     }
+
+    @Transactional(readOnly = true)
+    public List<PostListItemDto> searchPosts(String keyword) {
+        return postRepository
+                .findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(keyword, keyword)
+                .stream()
+                .map(post -> new PostListItemDto(
+                        post.getId(),
+                        post.getTitle(),
+                        post.getLikeCount(),
+                        post.getScrapCount(),
+                        post.getCreatedAt()
+                )).toList();
+    }
 }

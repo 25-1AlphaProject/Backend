@@ -4,12 +4,14 @@ import alpha.chupchup.dto.community.request.PostCreateRequestDto;
 import alpha.chupchup.dto.community.request.PostUpdateRequestDto;
 import alpha.chupchup.dto.community.response.PostCreateResponseDto;
 import alpha.chupchup.dto.community.response.PostDetailResponseDto;
+import alpha.chupchup.dto.community.response.PostListItemDto;
 import alpha.chupchup.service.community.CommunityPostService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -49,5 +51,10 @@ public class CommunityPostController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(postService.getPostList(sort, page, size));
+    }
+    @Operation(summary = "내가 쓴 게시글 조회", description = "현재 로그인한 사용자가 작성한 게시글 목록을 조회합니다.")
+    @GetMapping("/myposts")
+    public ResponseEntity<List<PostListItemDto>> getMyPosts() {
+        return ResponseEntity.ok(postService.getMyPosts());
     }
 }

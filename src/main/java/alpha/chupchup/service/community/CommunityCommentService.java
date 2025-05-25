@@ -99,4 +99,22 @@ public class CommunityCommentService {
         commentRepository.delete(comment);
     }
 
+    @Transactional(readOnly = true)
+    public List<CommentResponseDto> getMyComments() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username).orElseThrow();
+
+        return commentRepository.findAllByUser(user).stream()
+                .map(c -> new CommentResponseDto(
+                        c.getId(),
+                        c.getContent(),
+                        c.getParentComment() != null ? c.getParentComment().getId() : null,
+                        c.getCreatedAt(),
+                        new AuthorInfoDto(
+                                c.getUser().getId(),
+                                c.getUser().getNickname(),
+                                c.getUser().getProfileImageUrl()
+                        )
+                )).toList();
+    }
 }

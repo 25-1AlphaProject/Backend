@@ -155,4 +155,19 @@ public class CommunityPostService {
             default -> Sort.by(Sort.Order.desc("createdAt"));
         };
     }
+
+    @Transactional(readOnly = true)
+    public List<PostListItemDto> getMyPosts() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username).orElseThrow();
+
+        return postRepository.findAllByUser(user).stream()
+                .map(post -> new PostListItemDto(
+                        post.getId(),
+                        post.getTitle(),
+                        post.getLikeCount(),
+                        post.getScrapCount(),
+                        post.getCreatedAt()
+                )).toList();
+    }
 }

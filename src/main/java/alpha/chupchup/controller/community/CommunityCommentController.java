@@ -33,6 +33,11 @@ public class CommunityCommentController {
     public ResponseEntity<List<CommentResponseDto>> getComments(@PathVariable Long postId) {
         return ResponseEntity.ok(commentService.getCommentsByPost(postId));
     }
+    @Operation(summary = "내가 쓴 댓글 조회", description = "현재 로그인한 사용자가 작성한 댓글 목록을 조회합니다.")
+    @GetMapping("/comments/mycomments")
+    public ResponseEntity<List<CommentResponseDto>> getMyComments() {
+        return ResponseEntity.ok(commentService.getMyComments());
+    }
     @Operation(summary = "댓글 수정", description = "댓글 ID로 댓글 내용을 수정합니다.")
     @PutMapping("/comments/{commentId}")
     public ResponseEntity<Map<String, Object>> updateComment(

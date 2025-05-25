@@ -1,68 +1,51 @@
-package alpha.chupchup.controller;
+package alpha.chupchup.controller.community;
 
-import alpha.chupchup.dto.community.request.CommentCreateRequestDto;
 import alpha.chupchup.dto.community.response.CommentResponseDto;
+import alpha.chupchup.dto.community.request.CommentCreateRequestDto;
 import alpha.chupchup.dto.community.request.CommentUpdateRequestDto;
-import alpha.chupchup.service.CommunityCommentService;
+import alpha.chupchup.service.community.CommunityCommentService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/community/posts/{postId}/comments")
+@RequestMapping("/api/community")
 @RequiredArgsConstructor
 public class CommunityCommentController {
 
     private final CommunityCommentService commentService;
 
-    // (대)댓글 작성
-    @PostMapping
+    @Operation(summary = "댓글 작성", description = "게시글 ID에 댓글 또는 대댓글을 작성합니다.")
+    @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<Map<String, Object>> createComment(
             @PathVariable Long postId,
             @RequestBody CommentCreateRequestDto dto) {
 
         commentService.createComment(postId, dto);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", "success");
-        response.put("message", "댓글 작성 완료");
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(Map.of("status", "success", "message", "댓글 작성 완료"));
     }
-    // (대)댓글 조회
-    @GetMapping
+    @Operation(summary = "댓글 목록 조회", description = "게시글 ID로 해당 게시글의 댓글 전체를 조회합니다.")
+    @GetMapping("/posts/{postId}/comments")
     public ResponseEntity<List<CommentResponseDto>> getComments(@PathVariable Long postId) {
-        List<CommentResponseDto> response = commentService.getCommentsByPost(postId);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(commentService.getCommentsByPost(postId));
     }
-    // (대)댓글 수정
+    @Operation(summary = "댓글 수정", description = "댓글 ID로 댓글 내용을 수정합니다.")
     @PutMapping("/comments/{commentId}")
     public ResponseEntity<Map<String, Object>> updateComment(
             @PathVariable Long commentId,
             @RequestBody CommentUpdateRequestDto dto) {
 
         commentService.updateComment(commentId, dto);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", "success");
-        response.put("message", "댓글 수정 완료");
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(Map.of("status", "success", "message", "댓글 수정 완료"));
     }
-    // (대)댓글 삭제
+    @Operation(summary = "댓글 삭제", description = "댓글 ID로 댓글을 삭제합니다.")
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Map<String, Object>> deleteComment(@PathVariable Long commentId) {
         commentService.deleteComment(commentId);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", "success");
-        response.put("message", "댓글 삭제 완료");
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(Map.of("status", "success", "message", "댓글 삭제 완료"));
     }
-
 }

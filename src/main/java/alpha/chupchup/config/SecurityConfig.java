@@ -44,12 +44,15 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/", //root 요청 허용
-                                "/v3/api-docs/**",
-                                "/swagger-ui.html",
-                                "/swagger-ui/**"
+                                "/", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**"
                         ).permitAll()
-                        .requestMatchers("/api/users/signup", "/api/users/login", "/error").permitAll()
+                        .requestMatchers(
+                                "/api/users/signup", "/api/users/login", "/error",
+                                "/api/community/posts", "/api/community/posts/*"
+                        ).permitAll()
+
+                        .requestMatchers("/api/community/**").authenticated()
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

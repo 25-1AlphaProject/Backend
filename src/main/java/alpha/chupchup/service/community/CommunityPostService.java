@@ -1,14 +1,13 @@
-package alpha.chupchup.service;
+package alpha.chupchup.service.community;
 
 import alpha.chupchup.dto.community.request.PostCreateRequestDto;
 import alpha.chupchup.dto.community.request.PostUpdateRequestDto;
-import alpha.chupchup.dto.community.response.AuthorInfoDto;
-import alpha.chupchup.dto.community.response.CommentResponseDto;
-import alpha.chupchup.dto.community.response.PostCreateResponseDto;
-import alpha.chupchup.dto.community.response.PostDetailResponseDto;
+import alpha.chupchup.dto.community.response.*;
 import alpha.chupchup.entity.community.CommunityPost;
+import alpha.chupchup.entity.community.CommunityPostImage;
 import alpha.chupchup.entity.user.User;
-import alpha.chupchup.repository.CommunityPostRepository;
+import alpha.chupchup.repository.CommunityPostImageRepository;
+import alpha.chupchup.repository.community.CommunityPostRepository;
 import alpha.chupchup.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.HashMap;
@@ -28,9 +28,11 @@ import java.util.Map;
 public class CommunityPostService {
 
     private final CommunityPostRepository postRepository;
+    private final CommunityPostImageRepository imageRepository;
     private final UserRepository userRepository;
 
     // 게시글 작성
+    @Transactional
     public PostCreateResponseDto createPost(PostCreateRequestDto dto) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)
@@ -40,13 +42,23 @@ public class CommunityPostService {
         post.setUser(user);
         post.setTitle(dto.getTitle());
         post.setContent(dto.getContent());
-
         postRepository.save(post);
+
+        // 이미지 URL 저장
+        if (dto.getImageUrls() != null) {
+            for (String imageUrl : dto.getImageUrls()) {
+                CommunityPostImage image = new CommunityPostImage();
+                image.setPost(post);
+                image.setImageUrl(imageUrl);
+                imageRepository.save(image);
+            }
+        }
 
         return new PostCreateResponseDto("success", "게시글 작성 완료", post.getId());
     }
 
-    // 게시글 조회
+    // 게시글 상세 조회
+    @Transactional(readOnly = true)
     public PostDetailResponseDto getPostDetail(Long postId) {
         CommunityPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
@@ -62,17 +74,20 @@ public class CommunityPostService {
                                 c.getUser().getNickname(),
                                 c.getUser().getProfileImageUrl()
                         )
-                ))
+                )).toList();
+
+        List<String> imageUrls = post.getImages().stream()
+                .map(CommunityPostImage::getImageUrl)
                 .toList();
 
         return new PostDetailResponseDto(
                 post.getId(),
                 post.getTitle(),
                 post.getContent(),
-                List.of(), // images
+                imageUrls,
                 comments,
-                post.getLikes().size(),
-                post.getScraps().size(),
+                post.getLikeCount(),
+                post.getScrapCount(),
                 post.getCreatedAt(),
                 new AuthorInfoDto(
                         post.getUser().getId(),
@@ -83,6 +98,7 @@ public class CommunityPostService {
     }
 
     // 게시글 수정
+    @Transactional
     public void updatePost(Long postId, PostUpdateRequestDto dto) {
         CommunityPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
@@ -97,6 +113,7 @@ public class CommunityPostService {
     }
 
     // 게시글 삭제
+    @Transactional
     public void deletePost(Long postId) {
         CommunityPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
@@ -110,19 +127,18 @@ public class CommunityPostService {
     }
 
     // 게시글 목록 조회 페이징
+    @Transactional(readOnly = true)
     public Map<String, Object> getPostList(String sort, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, getSortBy(sort));
         Page<CommunityPost> postPage = postRepository.findAll(pageable);
 
-        List<Map<String, Object>> postList = postPage.stream().map(post -> {
-            Map<String, Object> p = new HashMap<>();
-            p.put("postId", post.getId());
-            p.put("title", post.getTitle());
-            p.put("likeCount", post.getLikes().size());
-            p.put("scrapCount", post.getScraps().size());
-            p.put("createdAt", post.getCreatedAt());
-            return p;
-        }).toList();
+        List<PostListItemDto> postList = postPage.stream().map(post -> new PostListItemDto(
+                post.getId(),
+                post.getTitle(),
+                post.getLikeCount(),
+                post.getScrapCount(),
+                post.getCreatedAt()
+        )).toList();
 
         Map<String, Object> result = new HashMap<>();
         result.put("posts", postList);
@@ -134,10 +150,9 @@ public class CommunityPostService {
 
     private Sort getSortBy(String sort) {
         return switch (sort) {
-            case "popular" -> Sort.by(Sort.Order.desc("likes"));  // likeCount를 기준으로 정렬
+            case "popular" -> Sort.by(Sort.Order.desc("likeCount"));
+            case "scrapped" -> Sort.by(Sort.Order.desc("scrapCount"));
             default -> Sort.by(Sort.Order.desc("createdAt"));
         };
     }
-
-
 }

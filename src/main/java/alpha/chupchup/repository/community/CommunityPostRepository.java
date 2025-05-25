@@ -1,4 +1,4 @@
-package alpha.chupchup.repository;
+package alpha.chupchup.repository.community;
 
 import alpha.chupchup.entity.community.CommunityPost;
 import org.springframework.data.jpa.repository.JpaRepository;

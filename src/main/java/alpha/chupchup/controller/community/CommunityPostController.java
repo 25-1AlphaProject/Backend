@@ -44,7 +44,8 @@ public class CommunityPostController {
         postService.deletePost(postId);
         return ResponseEntity.ok(Map.of("status", "success", "message", "게시글 삭제 완료"));
     }
-    @Operation(summary = "게시글 목록 조회", description = "정렬 조건 (recent, popular, scrapped)과 페이징 정보에 따라 게시글 목록을 조회합니다.")
+    @Operation(summary = "게시글 목록 조회", description = "정렬 조건 (recent, popular, scrapped)과 페이징 정보에 따라 게시글 목록을 조회합니다. " +
+            "예시: /api/community/posts?sort=popular&page=0&size=10")
     @GetMapping
     public ResponseEntity<Map<String, Object>> getPostList(
             @RequestParam(defaultValue = "recent") String sort,

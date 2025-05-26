@@ -8,7 +8,10 @@ import alpha.chupchup.entity.recipe.Recipe;
 import alpha.chupchup.entity.recipe.WeeklyMeal;
 import alpha.chupchup.entity.user.User;
 import alpha.chupchup.entity.user.UserDetail;
-import alpha.chupchup.repository.*;
+import alpha.chupchup.repository.MealRepository;
+import alpha.chupchup.repository.RealEatRepository;
+import alpha.chupchup.repository.UserDetailRepository;
+import alpha.chupchup.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -234,8 +237,6 @@ public class MealService {
                 .userDietInfo(dietInfoDto)
                 .healthGoal(userDetail.getHealthGoal())
                 .build();
-
-        System.out.println(fastApiRequest);
 
         String requestUrl = fastApiUrl + "/meal/weekly";
 

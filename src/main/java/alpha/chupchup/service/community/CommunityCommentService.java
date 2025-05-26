@@ -1,4 +1,4 @@
-package alpha.chupchup.service;
+package alpha.chupchup.service.community;
 
 import alpha.chupchup.dto.community.response.AuthorInfoDto;
 import alpha.chupchup.dto.community.request.CommentCreateRequestDto;
@@ -8,9 +8,12 @@ import alpha.chupchup.entity.community.CommunityComment;
 import alpha.chupchup.entity.community.CommunityPost;
 import alpha.chupchup.entity.user.User;
 import alpha.chupchup.repository.*;
+import alpha.chupchup.repository.community.CommunityCommentRepository;
+import alpha.chupchup.repository.community.CommunityPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,6 +26,7 @@ public class CommunityCommentService {
     private final UserRepository userRepository;
 
     // (대)댓글 작성
+    @Transactional
     public void createComment(Long postId, CommentCreateRequestDto dto) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)
@@ -39,6 +43,10 @@ public class CommunityCommentService {
         if (dto.getParentCommentId() != null) {
             CommunityComment parent = commentRepository.findById(dto.getParentCommentId())
                     .orElseThrow(() -> new IllegalArgumentException("부모 댓글이 존재하지 않습니다."));
+
+            if (parent.getParentComment() != null) {
+                throw new IllegalArgumentException("대댓글에는 댓글을 달 수 없습니다.");
+            }
             comment.setParentComment(parent);
         }
 
@@ -46,6 +54,7 @@ public class CommunityCommentService {
     }
 
     // (대)댓글 조회
+    @Transactional
     public List<CommentResponseDto> getCommentsByPost(Long postId) {
         List<CommunityComment> commentList = commentRepository.findAllByPostId(postId);
 
@@ -64,6 +73,7 @@ public class CommunityCommentService {
         ).toList();
     }
     // (대)댓글 수정
+    @Transactional
     public void updateComment(Long commentId, CommentUpdateRequestDto dto) {
         CommunityComment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
@@ -76,6 +86,7 @@ public class CommunityCommentService {
         comment.setContent(dto.getContent());
     }
     // (대)댓글 삭제
+    @Transactional
     public void deleteComment(Long commentId) {
         CommunityComment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
@@ -88,4 +99,22 @@ public class CommunityCommentService {
         commentRepository.delete(comment);
     }
 
+    @Transactional(readOnly = true)
+    public List<CommentResponseDto> getMyComments() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username).orElseThrow();
+
+        return commentRepository.findAllByUser(user).stream()
+                .map(c -> new CommentResponseDto(
+                        c.getId(),
+                        c.getContent(),
+                        c.getParentComment() != null ? c.getParentComment().getId() : null,
+                        c.getCreatedAt(),
+                        new AuthorInfoDto(
+                                c.getUser().getId(),
+                                c.getUser().getNickname(),
+                                c.getUser().getProfileImageUrl()
+                        )
+                )).toList();
+    }
 }

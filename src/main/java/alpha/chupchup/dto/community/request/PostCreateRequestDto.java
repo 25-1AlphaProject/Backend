@@ -9,6 +9,5 @@ import lombok.Setter;
 public class PostCreateRequestDto {
     private String title;
     private String content;
-//    private List<String> tags;
-    private List<String> images;
+    private List<String> imageUrls;
 }

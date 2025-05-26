@@ -10,6 +10,7 @@ import java.util.List;
 @Table(name = "community_posts")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class CommunityPost {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,12 +28,17 @@ public class CommunityPost {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    private int likeCount = 0;
+
+    @Column(nullable = false)
+    private int scrapCount = 0;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Cascade
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<CommunityComment> comments;
 
@@ -42,6 +48,6 @@ public class CommunityPost {
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<CommunityScrap> scraps;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<CommunityPostTag> postTags;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommunityPostImage> images;
 }

@@ -217,9 +217,29 @@ public class MealController {
         try {
             return ResponseEntity.ok(ResponseDto.success(mealService.getIngredientLinks(recipeId)));
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ResponseDto.error("재료 링크 조회에 실패했습니다."));
+        }
+    }
+
+    @PutMapping("/real-eat/edit/{realEatId}")
+    @Operation(summary = "실제로 먹은 식단 수정하기", description = "실제로 먹은 식단 정보를 수정합니다.")
+    public ResponseEntity<ResponseDto<String>> editRealEat(
+            @RequestBody RealEatEditRequestDto requestDto,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Parameter(
+                    description = "수정할 실제 식단 아이디",
+                    required = true
+            )
+            @PathVariable Long realEatId
+    ) {
+        try {
+            Long userId = userDetails.getUser().getId();
+            mealService.editRealEat(userId, realEatId, requestDto);
+            return ResponseEntity.ok(ResponseDto.success("실제로 먹은 식단이 정상적으로 수정되었습니다."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseDto.error("실제로 먹은 식단 수정에 실패했습니다."));
         }
     }
 }

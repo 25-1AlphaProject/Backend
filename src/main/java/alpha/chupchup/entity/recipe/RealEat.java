@@ -1,5 +1,6 @@
 package alpha.chupchup.entity.recipe;
 
+import alpha.chupchup.dto.meal.RealEatEditRequestDto;
 import alpha.chupchup.entity.user.User;
 import alpha.chupchup.entity.enums.MealType;
 import alpha.chupchup.entity.enums.Preference;
@@ -55,5 +56,11 @@ public class RealEat {
 
     public void setPreference(Preference preference) {
         this.preference = preference;
+    }
+
+    public void editRealEat(RealEatEditRequestDto dto) {
+        this.mealPhoto = dto.getMealPhoto();
+        this.customFoodName = dto.getCustomFoodName();
+        this.customFoodCalories = dto.getCustomFoodCalories();
     }
 }

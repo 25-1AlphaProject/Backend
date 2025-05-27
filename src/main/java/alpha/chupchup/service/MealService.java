@@ -245,9 +245,10 @@ public class MealService {
 
         if (response.getStatusCode() == HttpStatus.OK && response.getBody().isSuccess()) {
             LocalDate startDate = LocalDate.now();
-            LocalDate endDate   = startDate.plusDays(6);
 
-            List<WeeklyMeal> weeklyMeals = mealRepository.findByUserIdAndMealDateBetweenOrderByMealDateAsc(user.getId(), startDate, endDate);
+            LocalDate endDate = startDate.plusDays(6);
+
+            List<WeeklyMeal> weeklyMeals = mealRepository.findByUserAndMealDateBetweenOrderByMealDateAsc(user, startDate, endDate);
 
             return weeklyMeals.stream()
                     .map(meal -> {

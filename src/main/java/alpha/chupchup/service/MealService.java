@@ -302,4 +302,16 @@ public class MealService {
                 .filter(Objects::nonNull)
                 .toList();
     }
+
+    @Transactional
+    public void editRealEat(Long userId, Long realEatId, RealEatEditRequestDto dto) {
+        RealEat realEat = realEatRepository.findById(realEatId)
+                .orElseThrow(() -> new RuntimeException("해당 실제 식단을 찾을 수 없습니다."));
+
+        if (!realEat.getUser().getId().equals(userId)) {
+            throw new RuntimeException("권한이 없습니다.");
+        }
+
+        realEat.editRealEat(dto);
+    }
 }

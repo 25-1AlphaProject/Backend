@@ -1,8 +1,7 @@
 package alpha.chupchup.controller;
 
-import alpha.chupchup.dto.recipe.RecipeResponseDto;
-import alpha.chupchup.dto.recipe.RecipeSearchRequestDto;
 import alpha.chupchup.dto.ResponseDto;
+import alpha.chupchup.dto.recipe.RecipeResponseDto;
 import alpha.chupchup.security.CustomUserDetails;
 import alpha.chupchup.service.RecipeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -82,10 +81,9 @@ public class RecipeController {
     @GetMapping("/search")
     @Operation(summary = "레시피 검색하기", description = "키워드를 이용해서 관련된 레시피를 검색합니다.")
     public ResponseEntity<ResponseDto<?>> searchRecipe(
-            @RequestBody RecipeSearchRequestDto requestDto
+            @RequestParam("keyword") String keyword
     ) {
         try {
-            String keyword = requestDto.getKeyword();
             List<RecipeResponseDto> searchRecipe = recipeService.searchRecipe(keyword);
             return ResponseEntity.ok(ResponseDto.success(searchRecipe));
         } catch (Exception e) {

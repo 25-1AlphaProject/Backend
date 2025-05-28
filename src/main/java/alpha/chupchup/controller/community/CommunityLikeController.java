@@ -1,7 +1,7 @@
 package alpha.chupchup.controller.community;
 
 import alpha.chupchup.dto.community.response.PostListItemDto;
-import alpha.chupchup.service.CommunityLikeService;
+import alpha.chupchup.service.community.CommunityLikeService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

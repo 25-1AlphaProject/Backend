@@ -12,5 +12,7 @@ public class PostListItemDto {
     private String title;
     private int likeCount;
     private int scrapCount;
+    private int commentCount;
+    private String thumbnailUrl;
     private LocalDateTime createdAt;
 }

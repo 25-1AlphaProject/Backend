@@ -1,4 +1,4 @@
-package alpha.chupchup.service;
+package alpha.chupchup.service.community;
 
 import alpha.chupchup.dto.community.response.PostListItemDto;
 import alpha.chupchup.entity.community.CommunityLike;
@@ -53,6 +53,8 @@ public class CommunityLikeService {
                             post.getTitle(),
                             post.getLikeCount(),
                             post.getScrapCount(),
+                            post.getComments().size(),
+                            post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl(),
                             post.getCreatedAt()
                     );
                 })

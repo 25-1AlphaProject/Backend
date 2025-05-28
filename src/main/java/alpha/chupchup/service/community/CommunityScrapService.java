@@ -53,6 +53,8 @@ public class CommunityScrapService {
                             post.getTitle(),
                             post.getLikeCount(),
                             post.getScrapCount(),
+                            post.getComments().size(),
+                            post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl(),
                             post.getCreatedAt()
                     );
                 })

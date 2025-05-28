@@ -88,6 +88,7 @@ public class CommunityPostService {
                 comments,
                 post.getLikeCount(),
                 post.getScrapCount(),
+                post.getComments().size(),
                 post.getCreatedAt(),
                 new AuthorInfoDto(
                         post.getUser().getId(),
@@ -137,6 +138,8 @@ public class CommunityPostService {
                 post.getTitle(),
                 post.getLikeCount(),
                 post.getScrapCount(),
+                post.getComments().size(),
+                post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl(),
                 post.getCreatedAt()
         )).toList();
 
@@ -167,6 +170,8 @@ public class CommunityPostService {
                         post.getTitle(),
                         post.getLikeCount(),
                         post.getScrapCount(),
+                        post.getComments().size(),
+                        post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl(),
                         post.getCreatedAt()
                 )).toList();
     }
@@ -181,6 +186,8 @@ public class CommunityPostService {
                         post.getTitle(),
                         post.getLikeCount(),
                         post.getScrapCount(),
+                        post.getComments().size(),
+                        post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl(),
                         post.getCreatedAt()
                 )).toList();
     }

@@ -16,6 +16,7 @@ public class PostDetailResponseDto {
     private List<CommentResponseDto> comments;
     private int likeCount;
     private int scrapCount;
+    private int commentCount;
     private LocalDateTime createdAt;
     private AuthorInfoDto author;
 }

@@ -6,7 +6,7 @@ import alpha.chupchup.dto.community.response.*;
 import alpha.chupchup.entity.community.CommunityPost;
 import alpha.chupchup.entity.community.CommunityPostImage;
 import alpha.chupchup.entity.user.User;
-import alpha.chupchup.repository.CommunityPostImageRepository;
+import alpha.chupchup.repository.community.CommunityPostImageRepository;
 import alpha.chupchup.repository.community.CommunityPostRepository;
 import alpha.chupchup.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -88,6 +88,7 @@ public class CommunityPostService {
                 comments,
                 post.getLikeCount(),
                 post.getScrapCount(),
+                post.getComments().size(),
                 post.getCreatedAt(),
                 new AuthorInfoDto(
                         post.getUser().getId(),
@@ -110,6 +111,19 @@ public class CommunityPostService {
 
         post.setTitle(dto.getTitle());
         post.setContent(dto.getContent());
+
+        post.getImages().clear();
+        imageRepository.deleteAllByPost(post);
+
+        if (dto.getImageUrls() != null) {
+            for (String url : dto.getImageUrls()) {
+                CommunityPostImage image = new CommunityPostImage();
+                image.setPost(post);
+                image.setImageUrl(url);
+                imageRepository.save(image);
+            }
+        }
+
     }
 
     // 게시글 삭제
@@ -135,8 +149,11 @@ public class CommunityPostService {
         List<PostListItemDto> postList = postPage.stream().map(post -> new PostListItemDto(
                 post.getId(),
                 post.getTitle(),
+                post.getContent(),
                 post.getLikeCount(),
                 post.getScrapCount(),
+                post.getComments().size(),
+                post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl(),
                 post.getCreatedAt()
         )).toList();
 
@@ -165,8 +182,11 @@ public class CommunityPostService {
                 .map(post -> new PostListItemDto(
                         post.getId(),
                         post.getTitle(),
+                        post.getContent(),
                         post.getLikeCount(),
                         post.getScrapCount(),
+                        post.getComments().size(),
+                        post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl(),
                         post.getCreatedAt()
                 )).toList();
     }
@@ -179,8 +199,11 @@ public class CommunityPostService {
                 .map(post -> new PostListItemDto(
                         post.getId(),
                         post.getTitle(),
+                        post.getContent(),
                         post.getLikeCount(),
                         post.getScrapCount(),
+                        post.getComments().size(),
+                        post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl(),
                         post.getCreatedAt()
                 )).toList();
     }

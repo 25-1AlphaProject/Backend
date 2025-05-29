@@ -149,6 +149,7 @@ public class CommunityPostService {
         List<PostListItemDto> postList = postPage.stream().map(post -> new PostListItemDto(
                 post.getId(),
                 post.getTitle(),
+                post.getContent(),
                 post.getLikeCount(),
                 post.getScrapCount(),
                 post.getComments().size(),
@@ -181,6 +182,7 @@ public class CommunityPostService {
                 .map(post -> new PostListItemDto(
                         post.getId(),
                         post.getTitle(),
+                        post.getContent(),
                         post.getLikeCount(),
                         post.getScrapCount(),
                         post.getComments().size(),
@@ -197,6 +199,7 @@ public class CommunityPostService {
                 .map(post -> new PostListItemDto(
                         post.getId(),
                         post.getTitle(),
+                        post.getContent(),
                         post.getLikeCount(),
                         post.getScrapCount(),
                         post.getComments().size(),

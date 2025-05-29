@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class PostListItemDto {
     private Long postId;
     private String title;
+    private String content;
     private int likeCount;
     private int scrapCount;
     private int commentCount;

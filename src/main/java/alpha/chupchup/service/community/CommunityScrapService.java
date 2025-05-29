@@ -51,6 +51,7 @@ public class CommunityScrapService {
                     return new PostListItemDto(
                             post.getId(),
                             post.getTitle(),
+                            post.getContent(),
                             post.getLikeCount(),
                             post.getScrapCount(),
                             post.getComments().size(),

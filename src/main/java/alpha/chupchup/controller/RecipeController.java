@@ -109,4 +109,19 @@ public class RecipeController {
                     .body(ResponseDto.error("레시피 조회에 실패했습니다."));
         }
     }
+
+    @GetMapping("/image")
+    @CrossOrigin(origins = "*")
+    @Operation(summary = "레시피 이미지 조회하기", description = "레시피의 이미지를 조회합니다.")
+    public ResponseEntity<ResponseDto<String>> getRecipeImage(
+            @RequestParam("url") String imageUrl
+    ) {
+        try {
+            String dataUri = recipeService.getRecipeImage(imageUrl);
+            return ResponseEntity.ok(ResponseDto.success(dataUri));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseDto.error("레시피 이미지 조회에 실패했습니다."));
+        }
+    }
 }

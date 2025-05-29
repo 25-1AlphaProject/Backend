@@ -2,15 +2,19 @@ package alpha.chupchup.service;
 
 import alpha.chupchup.dto.recipe.RecipeResponseDto;
 import alpha.chupchup.entity.recipe.Recipe;
-import alpha.chupchup.entity.user.User;
 import alpha.chupchup.entity.recipe.UserRecipeFavorite;
+import alpha.chupchup.entity.user.User;
 import alpha.chupchup.repository.RecipeRepository;
 import alpha.chupchup.repository.UserRecipeFavoriteRepository;
 import alpha.chupchup.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,6 +28,7 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final UserRecipeFavoriteRepository userRecipeFavoriteRepository;
     private final UserRepository userRepository;
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @Transactional
     public void postRecipeFavorite(Long userId, Long recipeId) {
@@ -124,5 +129,22 @@ public class RecipeService {
         )
         .filter(Objects::nonNull)
         .toList();
+    }
+
+    public String getRecipeImage(String imageUrl) {
+        ResponseEntity<byte[]> resp = restTemplate.getForEntity(imageUrl, byte[].class);
+
+        if (!resp.getStatusCode().is2xxSuccessful() || resp.getBody() == null) {
+            throw new RuntimeException("이미지 조회에 실패했습니다.");
+        }
+
+        // 1) 응답 바이트를 Base64 문자열로 인코딩
+        String base64 = Base64.getEncoder().encodeToString(resp.getBody());
+        // 2) Content-Type 헤더 가져오기 (없으면 application/octet-stream)
+        String contentType = Optional.ofNullable(resp.getHeaders().getContentType())
+                .map(MediaType::toString)
+                .orElse("application/octet-stream");
+        // 3) data URI 조합
+        return "data:" + contentType + ";base64," + base64;
     }
 }

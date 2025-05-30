@@ -13,6 +13,7 @@ import java.util.List;
 @Builder
 public class RecipeResponseDto {
 
+    private Long id;
     private String name;
     private List<String> recipeTexts;
     private Float calories;

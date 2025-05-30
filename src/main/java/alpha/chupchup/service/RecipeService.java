@@ -86,6 +86,7 @@ public class RecipeService {
         List<Recipe> recipes = recipeRepository.searchRecipes(keyword);
         return recipes.stream()
                 .map(r -> RecipeResponseDto.builder()
+                        .id(r.getId())
                         .name(r.getName())
                         .recipeTexts(getRecipeTexts(r))
                         .calories(r.getCalories())

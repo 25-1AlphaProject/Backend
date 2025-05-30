@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Base64;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Service
@@ -106,6 +103,7 @@ public class RecipeService {
                 .orElseThrow(() -> new RuntimeException("해당 레시피를 찾을 수 없습니다."));
 
         return RecipeResponseDto.builder()
+                .id(recipeId)
                 .name(recipe.getName())
                 .recipeTexts(getRecipeTexts(recipe))
                 .calories(recipe.getCalories())
@@ -114,9 +112,24 @@ public class RecipeService {
                 .fat(recipe.getFat())
                 .sodium(recipe.getSodium())
                 .foodImage(recipe.getFoodImage())
-                .ingredient(recipe.getIngredient())
+                .ingredient(formatIngredients(recipe.getIngredient()))
                 .foodType(recipe.getFoodType())
                 .build();
+    }
+
+    private String formatIngredients(String raw) {
+        if (raw == null || raw.isBlank()) {
+            return "";
+        }
+
+        String unified = raw.replaceAll("\\r?\\n", ",");
+
+        List<String> items = Arrays.stream(unified.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
+
+        return String.join(", ", items);
     }
 
     List<String> getRecipeTexts(Recipe recipe) {

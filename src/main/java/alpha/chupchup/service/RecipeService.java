@@ -139,13 +139,10 @@ public class RecipeService {
             throw new RuntimeException("이미지 조회에 실패했습니다.");
         }
 
-        // 1) 응답 바이트를 Base64 문자열로 인코딩
         String base64 = Base64.getEncoder().encodeToString(resp.getBody());
-        // 2) Content-Type 헤더 가져오기 (없으면 application/octet-stream)
         String contentType = Optional.ofNullable(resp.getHeaders().getContentType())
                 .map(MediaType::toString)
                 .orElse("application/octet-stream");
-        // 3) data URI 조합
         return "data:" + contentType + ";base64," + base64;
     }
 }

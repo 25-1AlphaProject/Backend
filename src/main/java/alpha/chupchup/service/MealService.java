@@ -72,7 +72,7 @@ public class MealService {
                 .toList();
     }
 
-    public List<MealDto> getOneDayRealEatsByDate(Long userId, LocalDate date) {
+    public List<RealEatResponseDto> getOneDayRealEatsByDate(Long userId, LocalDate date) {
 
         List<RealEat> realEatList = realEatRepository.findAllByUserIdAndMealDate(
                 userId, date
@@ -80,22 +80,21 @@ public class MealService {
 
         return realEatList.stream()
                 .map(meal -> {
-                    Recipe recipe = meal.getRecipe();
-                    return MealDto.builder()
-                            .name(recipe.getName())
-                            .recipeId(meal.getId())
-                            .recipeTexts(getRecipeTexts(recipe))
-                            .calories(recipe.getCalories())
-                            .carbohydrates(recipe.getCarbohydrates())
-                            .protein(recipe.getProtein())
-                            .fat(recipe.getFat())
-                            .sodium(recipe.getSodium())
-                            .foodImage(recipe.getFoodImage())
-                            .ingredient(recipe.getIngredient())
-                            .foodType(recipe.getFoodType())
-                            .mealType(meal.getMealType())
-                            .dateTime(meal.getMealDate())
-                            .build();
+                    if (meal.getRecipe() != null) {
+                        Recipe recipe = meal.getRecipe();
+                        return RealEatResponseDto.builder()
+                                .mealName(recipe.getName())               // 레시피 이름
+                                .mealPhoto(recipe.getFoodImage())         // 레시피에 저장된 이미지 URL
+                                .calories(meal.getCustomFoodCalories())           // 레시피 칼로리
+                                .build();
+                    }
+                    else {
+                        return RealEatResponseDto.builder()
+                                .mealName(meal.getCustomFoodName())             // RealEat 엔티티에 들어있는 이름
+                                .mealPhoto(meal.getMealPhoto())           // RealEat 엔티티에 들어있는 사진 URL
+                                .calories(meal.getCustomFoodCalories())             // RealEat 엔티티에 들어있는 칼로리
+                                .build();
+                    }
                 })
                 .toList();
     }
@@ -133,6 +132,7 @@ public class MealService {
 
         RealEat realEat = RealEat.builder()
                 .user(user)
+                .customFoodName(recipe.getName())
                 .recipe(recipe)
                 .weeklyMeal(weeklyMeal)
                 .mealDate(requestDto.getMealDate())
@@ -188,6 +188,7 @@ public class MealService {
 
         RealEat realEat = RealEat.builder()
                 .user(user)
+                .customFoodName(requestDto.getName())
                 .mealDate(requestDto.getMealDate())
                 .customFoodCalories(requestDto.getFoodCalories())
                 .mealType(requestDto.getMealType())

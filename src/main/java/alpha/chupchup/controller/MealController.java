@@ -1,6 +1,6 @@
 package alpha.chupchup.controller;
 
-import alpha.chupchup.dto.*;
+import alpha.chupchup.dto.ResponseDto;
 import alpha.chupchup.dto.meal.*;
 import alpha.chupchup.dto.recipe.CookeryResponseDto;
 import alpha.chupchup.entity.user.User;
@@ -60,7 +60,7 @@ public class MealController {
     ) {
         try {
             Long userId = userDetails.getUser().getId();
-            List<MealDto> meals = mealService.getOneDayRealEatsByDate(userId, date);
+            List<RealEatResponseDto> meals = mealService.getOneDayRealEatsByDate(userId, date);
             return ResponseEntity.ok(ResponseDto.success(meals));
         } catch (Exception e) {
             return ResponseEntity

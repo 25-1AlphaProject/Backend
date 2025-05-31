@@ -1,5 +1,6 @@
 package alpha.chupchup.dto.meal;
 
+import alpha.chupchup.entity.enums.MealType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,4 +17,5 @@ public class RealEatResponseDto {
     Float protein;
     Float fat;
     Float carbohydrate;
+    MealType mealType;
 }

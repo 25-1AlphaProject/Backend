@@ -83,16 +83,19 @@ public class MealService {
                     if (meal.getRecipe() != null) {
                         Recipe recipe = meal.getRecipe();
                         return RealEatResponseDto.builder()
-                                .mealName(recipe.getName())               // 레시피 이름
-                                .mealPhoto(recipe.getFoodImage())         // 레시피에 저장된 이미지 URL
-                                .calories(meal.getCustomFoodCalories())           // 레시피 칼로리
+                                .mealName(recipe.getName())
+                                .mealPhoto(recipe.getFoodImage())
+                                .calories(meal.getCustomFoodCalories())
+                                .carbohydrate(recipe.getCarbohydrates())
+                                .protein(recipe.getProtein())
+                                .fat(recipe.getFat())
                                 .build();
                     }
                     else {
                         return RealEatResponseDto.builder()
-                                .mealName(meal.getCustomFoodName())             // RealEat 엔티티에 들어있는 이름
-                                .mealPhoto(meal.getMealPhoto())           // RealEat 엔티티에 들어있는 사진 URL
-                                .calories(meal.getCustomFoodCalories())             // RealEat 엔티티에 들어있는 칼로리
+                                .mealName(meal.getCustomFoodName())
+                                .mealPhoto(meal.getMealPhoto())
+                                .calories(meal.getCustomFoodCalories())
                                 .build();
                     }
                 })

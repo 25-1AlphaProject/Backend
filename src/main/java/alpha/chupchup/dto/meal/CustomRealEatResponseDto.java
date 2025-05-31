@@ -11,5 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CustomRealEatResponseDto {
     private String mealName;
-    private float foodCalories;
+    private Float foodCalories;
+    private Float protein;
+    private Float fat;
+    private Float carbohydrate;
 }

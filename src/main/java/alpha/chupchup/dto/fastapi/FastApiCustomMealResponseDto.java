@@ -10,4 +10,7 @@ import lombok.NoArgsConstructor;
 public class FastApiCustomMealResponseDto {
     private String mealName;
     private float foodCalories;
+    private Float protein;
+    private Float fat;
+    private Float carbohydrate;
 }

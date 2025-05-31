@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class MealDto {
     String name;
+    Long recipeId;
     List<String> recipeTexts;
     Float calories;
     Float carbohydrates;
@@ -25,5 +26,5 @@ public class MealDto {
     String ingredient;
     String foodType;
     MealType mealType;
-    LocalDateTime dateTime;
+    LocalDate dateTime;
 }

@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -54,6 +55,7 @@ public class MealService {
                     Recipe recipe = meal.getRecipe();
                     return MealDto.builder()
                             .name(recipe.getName())
+                            .recipeId(recipe.getId())
                             .recipeTexts(getRecipeTexts(recipe))
                             .calories(recipe.getCalories())
                             .carbohydrates(recipe.getCarbohydrates())
@@ -64,7 +66,7 @@ public class MealService {
                             .ingredient(recipe.getIngredient())
                             .foodType(recipe.getFoodType())
                             .mealType(meal.getMealType())
-                            .dateTime(meal.getCreatedAt())
+                            .dateTime(meal.getMealDate())
                             .build();
                 })
                 .toList();
@@ -81,6 +83,7 @@ public class MealService {
                     Recipe recipe = meal.getRecipe();
                     return MealDto.builder()
                             .name(recipe.getName())
+                            .recipeId(meal.getId())
                             .recipeTexts(getRecipeTexts(recipe))
                             .calories(recipe.getCalories())
                             .carbohydrates(recipe.getCarbohydrates())
@@ -91,7 +94,7 @@ public class MealService {
                             .ingredient(recipe.getIngredient())
                             .foodType(recipe.getFoodType())
                             .mealType(meal.getMealType())
-                            .dateTime(meal.getCreatedAt())
+                            .dateTime(meal.getMealDate())
                             .build();
                 })
                 .toList();
@@ -244,7 +247,7 @@ public class MealService {
         ResponseEntity<FastApiResponseDto> response = restTemplate.postForEntity(requestUrl, entity, FastApiResponseDto.class);
 
         if (response.getStatusCode() == HttpStatus.OK && response.getBody().isSuccess()) {
-            LocalDate startDate = LocalDate.now();
+            LocalDate startDate = LocalDate.now(ZoneId.of("Asia/Seoul"));
 
             LocalDate endDate = startDate.plusDays(6);
 
@@ -255,6 +258,7 @@ public class MealService {
                         Recipe recipe = meal.getRecipe();
                         return MealDto.builder()
                                 .name(recipe.getName())
+                                .recipeId(recipe.getId())
                                 .recipeTexts(getRecipeTexts(recipe))
                                 .calories(recipe.getCalories())
                                 .carbohydrates(recipe.getCarbohydrates())
@@ -265,7 +269,7 @@ public class MealService {
                                 .ingredient(recipe.getIngredient())
                                 .foodType(recipe.getFoodType())
                                 .mealType(meal.getMealType())
-                                .dateTime(meal.getCreatedAt())
+                                .dateTime(meal.getMealDate())
                                 .build();
                     })
                     .toList();

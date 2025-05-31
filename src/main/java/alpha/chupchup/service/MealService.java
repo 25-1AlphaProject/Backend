@@ -89,6 +89,7 @@ public class MealService {
                                 .carbohydrate(recipe.getCarbohydrates())
                                 .protein(recipe.getProtein())
                                 .fat(recipe.getFat())
+                                .mealType(meal.getMealType())
                                 .build();
                     }
                     else {
@@ -96,6 +97,7 @@ public class MealService {
                                 .mealName(meal.getCustomFoodName())
                                 .mealPhoto(meal.getMealPhoto())
                                 .calories(meal.getCustomFoodCalories())
+                                .mealType(meal.getMealType())
                                 .build();
                     }
                 })

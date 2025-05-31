@@ -13,4 +13,7 @@ public class RealEatResponseDto {
     String mealName;
     String mealPhoto;
     Float calories;
+    Float protein;
+    Float fat;
+    Float carbohydrate;
 }

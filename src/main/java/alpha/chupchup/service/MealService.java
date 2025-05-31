@@ -74,7 +74,7 @@ public class MealService {
 
     public List<RealEatResponseDto> getOneDayRealEatsByDate(Long userId, LocalDate date) {
 
-        List<RealEat> realEatList = realEatRepository.findAllByUserIdAndMealDate(userId, date);
+        List<RealEat> realEatList = realEatRepository.findAllByUser_IdAndMealDate(userId, date);
 
         return realEatList.stream()
                 .map(meal -> {

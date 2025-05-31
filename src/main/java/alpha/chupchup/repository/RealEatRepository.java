@@ -8,10 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RealEatRepository extends JpaRepository<RealEat, Long> {
-    List<RealEat> findAllByUserIdAndMealDate(
-            Long userId,
-            LocalDate mealDate
-    );
 
     Optional<RealEat> findByIdAndUserId(Long realEatId, Long userId);
+
+    List<RealEat> findAllByUser_IdAndMealDate(Long userId, LocalDate mealDate);
 }

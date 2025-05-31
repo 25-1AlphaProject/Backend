@@ -74,9 +74,7 @@ public class MealService {
 
     public List<RealEatResponseDto> getOneDayRealEatsByDate(Long userId, LocalDate date) {
 
-        List<RealEat> realEatList = realEatRepository.findAllByUserIdAndMealDate(
-                userId, date
-        );
+        List<RealEat> realEatList = realEatRepository.findAllByUser_IdAndMealDate(userId, date);
 
         return realEatList.stream()
                 .map(meal -> {
@@ -183,6 +181,9 @@ public class MealService {
         return CustomRealEatResponseDto.builder()
                 .mealName(response.getBody().getMealName())
                 .foodCalories(response.getBody().getFoodCalories() * request.getAmount())
+                .protein(response.getBody().getProtein())
+                .carbohydrate(response.getBody().getCarbohydrate())
+                .fat(response.getBody().getFat())
                 .build();
     }
 

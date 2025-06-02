@@ -81,6 +81,7 @@ public class MealService {
                     if (meal.getRecipe() != null) {
                         Recipe recipe = meal.getRecipe();
                         return RealEatResponseDto.builder()
+                                .mealId(meal.getId())
                                 .mealName(recipe.getName())
                                 .mealPhoto(recipe.getFoodImage())
                                 .calories(meal.getCustomFoodCalories())

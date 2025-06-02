@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RealEatResponseDto {
+    Long mealId;
     String mealName;
     String mealPhoto;
     Float calories;

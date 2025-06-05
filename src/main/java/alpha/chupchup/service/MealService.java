@@ -8,10 +8,7 @@ import alpha.chupchup.entity.recipe.Recipe;
 import alpha.chupchup.entity.recipe.WeeklyMeal;
 import alpha.chupchup.entity.user.User;
 import alpha.chupchup.entity.user.UserDetail;
-import alpha.chupchup.repository.MealRepository;
-import alpha.chupchup.repository.RealEatRepository;
-import alpha.chupchup.repository.UserDetailRepository;
-import alpha.chupchup.repository.UserRepository;
+import alpha.chupchup.repository.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,6 +39,7 @@ public class MealService {
     private final RestTemplate restTemplate;
     private final UserDetailRepository userDetailRepository;
     private final ObjectMapper objectMapper;
+    private final RecipeRepository recipeRepository;
     @Value("${fast-api.url}")
     private String fastApiUrl;
 
@@ -166,8 +164,11 @@ public class MealService {
             String mealName = responseDto.getMealName();
             float foodCalories = responseDto.getFoodCalories() * request.getAmount();
 
+            Recipe recipe = recipeRepository.findByName(mealName);
+
             RealEat realEat = RealEat.builder()
                     .user(user)
+                    .recipe(recipe)
                     .mealPhoto(requestDto.getMealPhoto())
                     .customFoodCalories(foodCalories)
                     .customFoodName(mealName)

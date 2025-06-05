@@ -18,4 +18,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
             "OR LOWER(r.recipeText6) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(r.ingredient) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Recipe> searchRecipes(String keyword);
+
+    Recipe findByName(String name);
 }

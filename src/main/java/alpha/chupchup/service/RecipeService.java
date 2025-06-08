@@ -65,6 +65,7 @@ public class RecipeService {
 
         return recipes.stream()
                 .map(fav -> RecipeResponseDto.builder()
+                        .id(fav.getRecipe().getId())
                         .name(fav.getRecipe().getName())
                         .recipeTexts(getRecipeTexts(fav.getRecipe()))
                         .calories(fav.getRecipe().getCalories())
